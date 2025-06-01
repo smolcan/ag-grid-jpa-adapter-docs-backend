@@ -1,0 +1,26 @@
+name: Ping with empty JSON structure
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send empty structured JSON
+        run: |
+          curl -X POST https://ag-grid-jpa-adapter-docs-backend.onrender.com/docs/sorting/getRows \
+            -H "Content-Type: application/json" \
+            -d '{
+              "startRow": 0,
+              "endRow": 0,
+              "rowGroupCols": [],
+              "valueCols": [],
+              "pivotCols": [],
+              "pivotMode": false,
+              "groupKeys": [],
+              "filterModel": {},
+              "sortModel": []
+            }'
