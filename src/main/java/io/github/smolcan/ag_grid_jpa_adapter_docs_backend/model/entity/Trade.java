@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -16,6 +18,13 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // For auto-increment behavior
     @Column(name = "trade_id")
     private Long tradeId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_trade_id")
+    private Trade parentTrade;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentTrade", orphanRemoval = true)
+    private Set<Trade> childTrades = new HashSet<>();
 
     @Column(name = "product", length = 255)
     private String product;
@@ -67,4 +76,14 @@ public class Trade {
     
     @Column(name = "is_sold")
     private Boolean isSold;
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Trade trade && this.tradeId.equals(trade.tradeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.tradeId.hashCode();
+    }
 }
