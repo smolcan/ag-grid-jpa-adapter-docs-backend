@@ -22,7 +22,7 @@ public class TradeDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         try {
-            // 1. Vytvor tabuľku (s parent stĺpcom, ale bez Constraintu pre rýchlosť insertu)
+            
             createTradeTable();
 
             Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM trade", Integer.class);
@@ -34,10 +34,9 @@ public class TradeDataLoader implements CommandLineRunner {
             System.out.println("Starting to insert 100,000 trade records with Hierarchy...");
             long startTime = System.currentTimeMillis();
 
-            // 2. Vlož dáta aj s parent ID
+            
             insertTradeData();
 
-            // 3. Pridaj Foreign Key Constraint dodatočne
             addForeignKeyConstraint();
 
             long endTime = System.currentTimeMillis();
@@ -58,7 +57,6 @@ public class TradeDataLoader implements CommandLineRunner {
             // Ignore
         }
 
-        // Pridaný stĺpec parent_trade_id, zatiaľ bez CONSTRAINT FOREIGN KEY
         String createTableSql = """
             CREATE TABLE trade (
                 trade_id IDENTITY PRIMARY KEY,
@@ -84,14 +82,12 @@ public class TradeDataLoader implements CommandLineRunner {
             """;
 
         jdbcTemplate.execute(createTableSql);
-        // Pre výkonnost indexujeme parent stĺpec (dôležité pre Tree Data queries!)
         jdbcTemplate.execute("CREATE INDEX idx_trade_parent ON trade(parent_trade_id)");
 
         System.out.println("Trade table created successfully.");
     }
 
     private void insertTradeData() {
-        // Pridaný parent_trade_id do INSERTu
         String sql = """
             INSERT INTO trade (
                 parent_trade_id,
@@ -110,31 +106,20 @@ public class TradeDataLoader implements CommandLineRunner {
             for (int i = 0; i < batchSize; i++) {
                 int recordNumber = batch * batchSize + i + 1;
 
-                // --- LOGIKA HIERARCHIE ---
                 Long parentId = null;
 
-                // Prvých 100 záznamov necháme vždy ako ROOT (pre istotu, aby strom mal viac koreňov)
                 if (recordNumber > 100) {
-                    // 5% šanca, že záznam bude ROOT (aj keď má vysoké ID)
-                    // 95% šanca, že bude mať rodiča
                     if (random.nextDouble() > 0.05) {
-                        // Rodič musí mať menšie ID ako aktuálny záznam (aby už existoval)
-                        // Vyberieme náhodné ID z rozsahu [1, recordNumber - 1]
-                        // Aby strom nebol príliš "plochý" (všetci pod ID 1), skúsime ho pripojiť k niekomu bližšie
-
-                        // Logika: Rodič je niekde v predchádzajúcich 2000 záznamoch alebo úplne náhodný
                         if (random.nextBoolean()) {
-                            // Lokálny rodič (vytvára hlbšie stromy)
                             int offset = random.nextInt(Math.min(recordNumber - 1, 500)) + 1;
                             parentId = (long) (recordNumber - offset);
                         } else {
-                            // Náhodný rodič z celej histórie
                             parentId = (long) (random.nextInt(recordNumber - 1) + 1);
                         }
                     }
                 }
 
-                Object[] row = new Object[18]; // Zväčšené pole o 1
+                Object[] row = new Object[18];
                 row[0] = parentId; // parent_trade_id
 
                 row[1] = "Product " + (random.nextInt(10) + 1);
@@ -168,7 +153,6 @@ public class TradeDataLoader implements CommandLineRunner {
 
     private void addForeignKeyConstraint() {
         System.out.println("Adding Foreign Key constraint...");
-        // Pridáme constraint až na konci, keď sú všetky dáta bezpečne v DB
         try {
             String sql = """
                 ALTER TABLE trade 
