@@ -15,25 +15,29 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TreeDataService {
 
-    private final EntityManager entityManager;
     private final QueryBuilder<Trade> queryBuilder;
 
     @Autowired
     public TreeDataService(EntityManager entityManager) {
-        this.entityManager = entityManager;
 
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
                         ColDef.builder()
                                 .field("tradeId")
+                                .build(),
+                        ColDef.builder()
+                                .field("product")
+                                .build(),
+                        ColDef.builder()
+                                .field("portfolio")
                                 .build()
                 )
 
                 .treeData(true)
                 .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeData_childrenCollectionFieldName("childTrades")
-                .treeData_parentEntityFieldName("parentTrade")
+                .treeDataParentReferenceField("parentTrade")
+                .treeDataChildrenField("childTrades")
 
                 .build();
     }

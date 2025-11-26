@@ -19,10 +19,13 @@ public class Trade {
     @Column(name = "trade_id")
     private Long tradeId;
     
+//    @Column(name = "parent_trade_id")
+//    private Long parentTradeId;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_trade_id")
     private Trade parentTrade;
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentTrade", orphanRemoval = true)
     private Set<Trade> childTrades = new HashSet<>();
 
