@@ -36,6 +36,8 @@ public class MasterDetailService {
                 )
                 
                 .masterDetail(true)
+//                .masterDetailLazy(false)
+//                .masterDetailRowDataFieldName("detailRowData")
                 .primaryFieldName("tradeId")
                 .detailClass(Trade.class)
                 .detailColDefs(
