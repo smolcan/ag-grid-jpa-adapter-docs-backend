@@ -36,13 +36,34 @@ public class MasterDetailService {
                 )
                 
                 .masterDetail(true)
-//                .masterDetailLazy(false)
-//                .masterDetailRowDataFieldName("detailRowData")
                 .primaryFieldName("tradeId")
                 .detailClass(Trade.class)
+//                .dynamicColDefs((Map<String, Object> masterRow) -> {
+//                    String product = masterRow.get("product").toString();
+//                    
+//                    if (product.contains("1") || product.contains("2") || product.contains("3")) {
+//                        return List.of(
+//                                ColDef.builder()
+//                                        .field("tradeId")
+//                                        .build(),
+//                                ColDef.builder()
+//                                        .field("product")
+//                                        .build()
+//                        );
+//                    } else {
+//                        return List.of(
+//                                ColDef.builder()
+//                                        .field("tradeId")
+//                                        .build(),
+//                                ColDef.builder()
+//                                        .field("portfolio")
+//                                        .build()
+//                        );
+//                    }
+//                })
                 .detailColDefs(
                         ColDef.builder()
-                                .field("parentTrade.tradeId")
+                                .field("tradeId")
                                 .build(),
                         ColDef.builder()
                                 .field("product")
@@ -52,9 +73,9 @@ public class MasterDetailService {
                                 .build()
                 )
 //                .createMasterRowPredicate((cb, detailRoot, masterRow) -> {
-//                    // same product
+//                    // product has bigger id
 //                    Object masterRowProduct = masterRow.get("product");
-//                    return cb.equal(detailRoot.get("product"), masterRowProduct);
+//                    return cb.greaterThan(detailRoot.get("product"), (Expression) cb.literal(masterRowProduct));
 //                })
                 .detailMasterReferenceField("parentTrade")
                 
