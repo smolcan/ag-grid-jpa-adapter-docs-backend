@@ -32,7 +32,7 @@ public class CustomFilterService {
                                 .build(),
                         
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .filter(
                                         new CustomNumberFilter()
                                                 .filterParams(

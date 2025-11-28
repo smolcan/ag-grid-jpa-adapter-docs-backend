@@ -33,7 +33,7 @@ public class PaginationService {
                                 .build(),
 
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .filter(
                                         new AgNumberColumnFilter()
                                 )
@@ -64,7 +64,7 @@ public class PaginationService {
                                 .build(),
 
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .filter(
                                         new AgNumberColumnFilter()
                                 )

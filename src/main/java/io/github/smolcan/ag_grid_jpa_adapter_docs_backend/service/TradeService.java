@@ -157,7 +157,7 @@ public class TradeService {
 
                         // Submitter ID with multi-column filter
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -175,7 +175,7 @@ public class TradeService {
 
                         // Submitter Deal ID with number filter
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)

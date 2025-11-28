@@ -31,7 +31,7 @@ public class NumberFilterService {
                                 .build(),
                         
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .filter(
                                         new AgNumberColumnFilter()
                                                 .filterParams(NumberFilterParams
@@ -43,7 +43,7 @@ public class NumberFilterService {
                                 .build(),
 
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .filter(
                                         new AgNumberColumnFilter()
                                                 .filterParams(NumberFilterParams

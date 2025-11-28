@@ -38,12 +38,12 @@ public class AggregationService {
                                 .build(),
                         // numbers
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),
@@ -72,12 +72,12 @@ public class AggregationService {
                                 .build(),
                         // numbers
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),
@@ -107,12 +107,12 @@ public class AggregationService {
                                 .build(),
                         // numbers
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),

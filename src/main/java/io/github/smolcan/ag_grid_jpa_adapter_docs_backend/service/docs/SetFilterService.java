@@ -70,7 +70,7 @@ public class SetFilterService {
                                 .build(),
 
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .filter(new AgSetColumnFilter())
                                 .build(),
 

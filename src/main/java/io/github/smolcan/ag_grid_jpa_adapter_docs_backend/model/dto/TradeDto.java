@@ -17,8 +17,8 @@ public class TradeDto {
     private String product;
     private String portfolio;
     private String book;
-    private Integer submitterId;
-    private Integer submitterDealId;
+    private Long submitterId;
+    private Long submitterDealId;
     private String dealType;
     private String bidType;
     private BigDecimal currentValue;
@@ -38,8 +38,8 @@ public class TradeDto {
         this.product = trade.getProduct();
         this.portfolio = trade.getPortfolio();
         this.book = trade.getBook();
-        this.submitterId = trade.getSubmitterId();
-        this.submitterDealId = trade.getSubmitterDealId();
+        this.submitterId = trade.getSubmitter() != null ? trade.getSubmitter().getId() : null;
+        this.submitterDealId = trade.getSubmitterDeal() != null ? trade.getSubmitterDeal().getId() : null;
         this.dealType = trade.getDealType();
         this.bidType = trade.getBidType();
         this.currentValue = trade.getCurrentValue();

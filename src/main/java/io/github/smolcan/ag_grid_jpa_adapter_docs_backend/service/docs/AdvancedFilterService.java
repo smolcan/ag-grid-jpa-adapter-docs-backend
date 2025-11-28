@@ -36,10 +36,10 @@ public class AdvancedFilterService {
                                 .build(),
                         // numbers
                         ColDef.builder()
-                                .field("submitterId")
+                                .field("submitter.id")
                                 .build(),
                         ColDef.builder()
-                                .field("submitterDealId")
+                                .field("submitterDeal.id")
                                 .build(),
                         // date
                         ColDef.builder()

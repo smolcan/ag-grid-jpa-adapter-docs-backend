@@ -1,5 +1,6 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
@@ -17,50 +18,24 @@ import java.util.Map;
 @Service
 public class MasterDetailService {
 
-    private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Submitter> basicQueryBuilder;
 
     @Autowired
     public MasterDetailService(EntityManager entityManager) {
 
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, entityManager)
                 .colDefs(
                         ColDef.builder()
-                                .field("tradeId")
+                                .field("id")
                                 .build(),
                         ColDef.builder()
-                                .field("product")
-                                .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                                .field("name")
                                 .build()
                 )
                 
                 .masterDetail(true)
-                .primaryFieldName("tradeId")
+                .primaryFieldName("id")
                 .detailClass(Trade.class)
-//                .dynamicColDefs((Map<String, Object> masterRow) -> {
-//                    String product = masterRow.get("product").toString();
-//                    
-//                    if (product.contains("1") || product.contains("2") || product.contains("3")) {
-//                        return List.of(
-//                                ColDef.builder()
-//                                        .field("tradeId")
-//                                        .build(),
-//                                ColDef.builder()
-//                                        .field("product")
-//                                        .build()
-//                        );
-//                    } else {
-//                        return List.of(
-//                                ColDef.builder()
-//                                        .field("tradeId")
-//                                        .build(),
-//                                ColDef.builder()
-//                                        .field("portfolio")
-//                                        .build()
-//                        );
-//                    }
-//                })
                 .detailColDefs(
                         ColDef.builder()
                                 .field("tradeId")
@@ -72,12 +47,7 @@ public class MasterDetailService {
                                 .field("portfolio")
                                 .build()
                 )
-//                .createMasterRowPredicate((cb, detailRoot, masterRow) -> {
-//                    // product has bigger id
-//                    Object masterRowProduct = masterRow.get("product");
-//                    return cb.greaterThan(detailRoot.get("product"), (Expression) cb.literal(masterRowProduct));
-//                })
-                .detailMasterReferenceField("parentTrade")
+                .detailMasterReferenceField("submitter")
                 
                 
                 .build();
@@ -87,7 +57,7 @@ public class MasterDetailService {
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         try {
-            return this.queryBuilder.getRows(request);
+            return this.basicQueryBuilder.getRows(request);
         } catch (OnPivotMaxColumnsExceededException e) {
             throw new RuntimeException(e);
         }
@@ -96,7 +66,7 @@ public class MasterDetailService {
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getDetailRowData(Map<String, Object> masterRow) {
         try {
-            return this.queryBuilder.getDetailRowData(masterRow);
+            return this.basicQueryBuilder.getDetailRowData(masterRow);
         } catch (OnPivotMaxColumnsExceededException e) {
             throw new RuntimeException(e);
         }

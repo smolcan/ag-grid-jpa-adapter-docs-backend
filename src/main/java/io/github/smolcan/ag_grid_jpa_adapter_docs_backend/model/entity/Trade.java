@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -38,11 +39,17 @@ public class Trade {
     @Column(name = "book", length = 255)
     private String book;
 
-    @Column(name = "submitter_id")
-    private Integer submitterId;
+//    @Column(name = "submitter_id")
+//    private Integer submitterId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "submitter_id")
+    private Submitter submitter;
 
-    @Column(name = "submitter_deal_id")
-    private Integer submitterDealId;
+//    @Column(name = "submitter_deal_id")
+//    private Integer submitterDealId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "submitter_deal_id")
+    private SubmitterDeal submitterDeal;
 
     @Column(name = "deal_type", length = 255)
     private String dealType;
@@ -82,11 +89,11 @@ public class Trade {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Trade trade && this.tradeId.equals(trade.tradeId);
+        return obj instanceof Trade trade && Objects.equals(this.tradeId, trade.tradeId);
     }
 
     @Override
     public int hashCode() {
-        return this.tradeId.hashCode();
+        return Objects.hashCode(this.tradeId);
     }
 }
