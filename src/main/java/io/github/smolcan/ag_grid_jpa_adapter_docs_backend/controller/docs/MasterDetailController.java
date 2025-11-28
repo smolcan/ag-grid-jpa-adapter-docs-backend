@@ -32,5 +32,11 @@ public class MasterDetailController {
         List<Map<String, Object>> result = this.masterDetailService.getDetailRowData(masterRow);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("eager/getRows")
+    public ResponseEntity<LoadSuccessParams> getEagerRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.masterDetailService.getEagerRows(request);
+        return ResponseEntity.ok(result);
+    }
     
 }

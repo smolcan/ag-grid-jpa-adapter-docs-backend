@@ -19,6 +19,7 @@ import java.util.Map;
 public class MasterDetailService {
 
     private final QueryBuilder<Submitter> basicQueryBuilder;
+    private final QueryBuilder<Submitter> eagerQueryBuilder;
 
     @Autowired
     public MasterDetailService(EntityManager entityManager) {
@@ -51,6 +52,37 @@ public class MasterDetailService {
                 
                 
                 .build();
+
+        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("id")
+                                .build(),
+                        ColDef.builder()
+                                .field("name")
+                                .build()
+                )
+
+                .masterDetail(true)
+                .masterDetailLazy(false)
+                .masterDetailRowDataFieldName("detailRows")
+                .primaryFieldName("id")
+                .detailClass(Trade.class)
+                .detailColDefs(
+                        ColDef.builder()
+                                .field("tradeId")
+                                .build(),
+                        ColDef.builder()
+                                .field("product")
+                                .build(),
+                        ColDef.builder()
+                                .field("portfolio")
+                                .build()
+                )
+                .detailMasterReferenceField("submitter")
+
+
+                .build();
     }
 
 
@@ -67,6 +99,15 @@ public class MasterDetailService {
     public List<Map<String, Object>> getDetailRowData(Map<String, Object> masterRow) {
         try {
             return this.basicQueryBuilder.getDetailRowData(masterRow);
+        } catch (OnPivotMaxColumnsExceededException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getEagerRows(ServerSideGetRowsRequest request) {
+        try {
+            return this.eagerQueryBuilder.getRows(request);
         } catch (OnPivotMaxColumnsExceededException e) {
             throw new RuntimeException(e);
         }
