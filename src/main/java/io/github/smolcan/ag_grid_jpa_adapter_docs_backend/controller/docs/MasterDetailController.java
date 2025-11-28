@@ -38,5 +38,18 @@ public class MasterDetailController {
         LoadSuccessParams result = this.masterDetailService.getEagerRows(request);
         return ResponseEntity.ok(result);
     }
+
+
+    @PostMapping("dynamic/getRows")
+    public ResponseEntity<LoadSuccessParams> getDynamicRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.masterDetailService.getDynamicRows(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("dynamic/getDetailRowData")
+    public ResponseEntity<List<Map<String, Object>>> getDynamicDetailRowData(@RequestBody Map<String, Object> masterRow) {
+        List<Map<String, Object>> result = this.masterDetailService.getDynamicDetailRowData(masterRow);
+        return ResponseEntity.ok(result);
+    }
     
 }
