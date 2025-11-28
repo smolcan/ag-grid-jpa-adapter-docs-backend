@@ -51,5 +51,17 @@ public class MasterDetailController {
         List<Map<String, Object>> result = this.masterDetailService.getDynamicDetailRowData(masterRow);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("tree/getRows")
+    public ResponseEntity<LoadSuccessParams> getTreeDataRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.masterDetailService.getTreeDataRows(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("tree/getDetailRowData")
+    public ResponseEntity<List<Map<String, Object>>> getTreeDataDetailRowData(@RequestBody Map<String, Object> masterRow) {
+        List<Map<String, Object>> result = this.masterDetailService.getTreeDataDetailRowData(masterRow);
+        return ResponseEntity.ok(result);
+    }
     
 }
