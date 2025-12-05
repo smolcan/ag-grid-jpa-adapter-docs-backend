@@ -60,7 +60,7 @@ public class QuickFilterService {
                 )
                 
                 .isQuickFilterPresent(true)
-                .quickFilterSearchInFields("submitter.name", "product", "portfolio", "book", "dealType", "bidType")
+                .quickFilterSearchInFields("tradeId", "submitter.name", "product", "portfolio", "book", "dealType", "bidType")
                 .quickFilterTextFormatter((cb, stringExpr) -> {
                     Expression<String> newExpression = stringExpr;
                     // Remove accents
