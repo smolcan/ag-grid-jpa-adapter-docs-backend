@@ -9,6 +9,7 @@ import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,15 @@ public class QuickFilterService {
                 
                 .isQuickFilterPresent(true)
                 .quickFilterSearchInFields("submitter.name", "product", "portfolio", "book", "dealType", "bidType")
+                .quickFilterTextFormatter((cb, stringExpr) -> {
+                    Expression<String> newExpression = stringExpr;
+                    // Remove accents
+                    newExpression = cb.function("TRANSLATE", String.class, newExpression,
+                            cb.literal("áéíóúÁÉÍÓÚüÜñÑ"),
+                            cb.literal("aeiouAEIOUuUnN"));
+
+                    return newExpression;
+                })
                 
                 .build();
     }
