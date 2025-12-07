@@ -23,6 +23,7 @@ public class MasterDetailService {
 
     private final QueryBuilder<Submitter> basicQueryBuilder;
     private final QueryBuilder<Submitter> eagerQueryBuilder;
+    private final QueryBuilder<Trade> customDetailConditionQueryBuilder;
     private final QueryBuilder<Submitter> dynamicDetailQueryBuilder;
     private final QueryBuilder<Trade> treeDataMasterDetailQueryBuilder;
 
@@ -91,6 +92,55 @@ public class MasterDetailService {
                                 .detailMasterReferenceField("submitter")
                                 .build()
                 )
+                .build();
+        
+        this.customDetailConditionQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("id")
+                                .build(),
+                        ColDef.builder()
+                                .field("submitter.id")
+                                .build(),
+                        ColDef.builder()
+                                .field("submitter.name")
+                                .build()
+                )
+
+                .masterDetail(true)
+                .primaryFieldName("id")
+                .masterDetailParams(
+                        QueryBuilder.MasterDetailParams.builder()
+                                .detailClass(Trade.class)
+                                .detailColDefs(
+                                        ColDef.builder()
+                                                .field("id")
+                                                .build(),
+                                        ColDef.builder()
+                                                .field("submitter.id")
+                                                .build(),
+                                        ColDef.builder()
+                                                .field("submitter.name")
+                                                .build()
+                                )
+                                .createMasterRowPredicate((cb, detailRoot, masterRow) -> {
+                                    // detail will have all the trades that have the same submitter
+                                    var submitterObj = (Map<String, Object>) masterRow.get("submitter");
+                                    if (submitterObj == null || submitterObj.isEmpty()) {
+                                        return cb.or();
+                                    }
+
+                                    Long submitterId = Optional.ofNullable(submitterObj.get("id")).map(String::valueOf).map(Long::parseLong).orElse(null);
+                                    Path<?> path = Utils.getPath(detailRoot, "submitter.id");
+                                    if (submitterId == null) {
+                                        return cb.isNull(path);
+                                    } else {
+                                        return cb.equal(path, submitterId);
+                                    }
+                                })
+                                .build()
+                )
+
                 .build();
         
         
@@ -228,6 +278,16 @@ public class MasterDetailService {
         } catch (OnPivotMaxColumnsExceededException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getCustomDetailConditionRows(ServerSideGetRowsRequest request) {
+        return this.customDetailConditionQueryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getCustomDetailConditionDetailRows(Map<String, Object> request) {
+        return this.customDetailConditionQueryBuilder.getDetailRowData(request);
     }
     
     @Transactional(readOnly = true)

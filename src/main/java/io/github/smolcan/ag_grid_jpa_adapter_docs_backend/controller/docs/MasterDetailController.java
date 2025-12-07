@@ -39,6 +39,18 @@ public class MasterDetailController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("custom-detail-condition/getRows")
+    public ResponseEntity<LoadSuccessParams> getCustomDetailConditionRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.masterDetailService.getCustomDetailConditionRows(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("custom-detail-condition/getDetailRows")
+    public ResponseEntity<List<Map<String, Object>>> getCustomDetailConditionDetailRows(@RequestBody Map<String, Object> masterRow) {
+        List<Map<String, Object>> result = this.masterDetailService.getCustomDetailConditionDetailRows(masterRow);
+        return ResponseEntity.ok(result);
+    }
+
 
     @PostMapping("dynamic/getRows")
     public ResponseEntity<LoadSuccessParams> getDynamicRows(@RequestBody ServerSideGetRowsRequest request) {
