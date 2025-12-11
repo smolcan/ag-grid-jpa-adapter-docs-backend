@@ -3,7 +3,7 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.TradeDto;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.TradeService;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
+
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +32,13 @@ public class TradeController {
     }
     
     @PostMapping("/getRows")
-    public ResponseEntity<LoadSuccessParams> getRows(@RequestBody ServerSideGetRowsRequest request)
-            throws JsonProcessingException, OnPivotMaxColumnsExceededException {
+    public ResponseEntity<LoadSuccessParams> getRows(@RequestBody ServerSideGetRowsRequest request) throws JsonProcessingException {
         LoadSuccessParams result = this.tradeService.getRows(request);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/countRows")
-    public ResponseEntity<Long> countRows(@RequestBody ServerSideGetRowsRequest request)
-            throws JsonProcessingException, OnPivotMaxColumnsExceededException {
+    public ResponseEntity<Long> countRows(@RequestBody ServerSideGetRowsRequest request) throws JsonProcessingException {
         long result = this.tradeService.countRows(request);
         return ResponseEntity.ok(result);
     }

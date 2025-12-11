@@ -3,7 +3,7 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
+
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.DateFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgDateColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
@@ -54,10 +54,6 @@ public class DateFilterService {
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.queryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.queryBuilder.getRows(request);
     }
 }

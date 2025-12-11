@@ -6,7 +6,7 @@ import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumber
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilterParams;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
+
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.MultiFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.SetFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.TextFilterParams;
@@ -285,8 +285,7 @@ public class TradeService {
     }
 
     @Transactional(readOnly = true)
-    public LoadSuccessParams getRows(ServerSideGetRowsRequest request) 
-            throws JsonProcessingException, OnPivotMaxColumnsExceededException {
+    public LoadSuccessParams getRows(ServerSideGetRowsRequest request) throws JsonProcessingException {
         LOGGER.info("getRows called, received request: ");
         LOGGER.info(OBJECT_MAPPER.writeValueAsString(request));
         LOGGER.info("executing...: ");
@@ -295,7 +294,7 @@ public class TradeService {
 
     @Transactional(readOnly = true)
     public long countRows(ServerSideGetRowsRequest request)
-            throws JsonProcessingException, OnPivotMaxColumnsExceededException {
+            throws JsonProcessingException {
         LOGGER.info("countRows called, received request: ");
         LOGGER.info(OBJECT_MAPPER.writeValueAsString(request));
         LOGGER.info("executing...: ");

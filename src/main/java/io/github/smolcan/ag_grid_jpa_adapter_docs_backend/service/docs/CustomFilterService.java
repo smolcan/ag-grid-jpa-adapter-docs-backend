@@ -5,7 +5,7 @@ import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumber
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilterParams;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
+
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -48,10 +48,6 @@ public class CustomFilterService {
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.queryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.queryBuilder.getRows(request);
     }
 }

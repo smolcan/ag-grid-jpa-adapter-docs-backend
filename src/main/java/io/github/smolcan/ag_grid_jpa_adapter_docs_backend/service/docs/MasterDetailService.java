@@ -3,7 +3,6 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -255,29 +254,17 @@ public class MasterDetailService {
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.basicQueryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.basicQueryBuilder.getRows(request);
     }
 
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getDetailRowData(Map<String, Object> masterRow) {
-        try {
-            return this.basicQueryBuilder.getDetailRowData(masterRow);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.basicQueryBuilder.getDetailRowData(masterRow);
     }
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getEagerRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.eagerQueryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.eagerQueryBuilder.getRows(request);
     }
 
     @Transactional(readOnly = true)
@@ -292,39 +279,23 @@ public class MasterDetailService {
     
     @Transactional(readOnly = true)
     public LoadSuccessParams getDynamicRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.dynamicDetailQueryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.dynamicDetailQueryBuilder.getRows(request);
     }
     
 
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getDynamicDetailRowData(Map<String, Object> masterRow) {
-        try {
-            return this.dynamicDetailQueryBuilder.getDetailRowData(masterRow);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.dynamicDetailQueryBuilder.getDetailRowData(masterRow);
     }
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getTreeDataRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.treeDataMasterDetailQueryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.treeDataMasterDetailQueryBuilder.getRows(request);
     }
 
 
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getTreeDataDetailRowData(Map<String, Object> masterRow) {
-        try {
-            return this.treeDataMasterDetailQueryBuilder.getDetailRowData(masterRow);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.treeDataMasterDetailQueryBuilder.getDetailRowData(masterRow);
     }
 }

@@ -2,7 +2,7 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
+
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgDateColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnFilter;
@@ -89,37 +89,21 @@ public class PaginationService {
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.queryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.queryBuilder.getRows(request);
     }
 
     @Transactional(readOnly = true)
     public long countRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.queryBuilder.countRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.queryBuilder.countRows(request);
     }
 
     @Transactional(readOnly = true)
     public LoadSuccessParams paginateChildRowsGetRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.paginateChildRowsQueryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.paginateChildRowsQueryBuilder.getRows(request);
     }
 
     @Transactional(readOnly = true)
     public long paginateChildRowsCountRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.paginateChildRowsQueryBuilder.countRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.paginateChildRowsQueryBuilder.countRows(request);
     }
 }
