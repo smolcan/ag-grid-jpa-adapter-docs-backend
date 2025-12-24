@@ -23,4 +23,10 @@ public class RowGroupingController {
         LoadSuccessParams result = this.rowGroupingService.getRows(request);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("child-count/getRows")
+    public ResponseEntity<LoadSuccessParams> getChildCountRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.rowGroupingService.getChildCountRows(request);
+        return ResponseEntity.ok(result);
+    }
 }

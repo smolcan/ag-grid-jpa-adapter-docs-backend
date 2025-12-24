@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RowGroupingService {
 
     private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade> childCountQueryBuilder;
     
     @Autowired
     public RowGroupingService(EntityManager entityManager) {
@@ -40,11 +41,39 @@ public class RowGroupingService {
                                 .build()
                 )
                 .build();
+
+        this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("tradeId")
+                                .filter(new AgNumberColumnFilter())
+                                .build(),
+
+                        ColDef.builder()
+                                .field("portfolio")
+                                .enableRowGroup(true)
+                                .filter(new AgTextColumnFilter())
+                                .build(),
+
+                        ColDef.builder()
+                                .field("product")
+                                .enableRowGroup(true)
+                                .filter(new AgTextColumnFilter())
+                                .build()
+                )
+                .getChildCount(true)
+                .getChildCountFieldName("childCount")
+                .build();
     }
 
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getChildCountRows(ServerSideGetRowsRequest request) {
+        return this.childCountQueryBuilder.getRows(request);
     }
 }
