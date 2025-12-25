@@ -35,4 +35,10 @@ public class AggregationController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/custom-agg-func/getRows")
+    public ResponseEntity<LoadSuccessParams> getRowsCustomAggFunc(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.aggregationService.getRowsCustomAggFunc(request);
+        return ResponseEntity.ok(result);
+    }
+
 }
