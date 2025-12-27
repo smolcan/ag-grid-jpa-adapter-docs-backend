@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 public class MultiFilterService {
@@ -67,5 +69,10 @@ public class MultiFilterService {
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Object> supplySetFilterValues(String field) {
+        return this.queryBuilder.supplySetFilterValues(field);
     }
 }
