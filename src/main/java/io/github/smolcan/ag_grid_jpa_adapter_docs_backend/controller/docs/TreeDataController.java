@@ -23,4 +23,10 @@ public class TreeDataController {
         LoadSuccessParams result = this.treeDataService.getRows(request);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("filtering/getRows")
+    public ResponseEntity<LoadSuccessParams> getFilteredRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.treeDataService.getFilteredRows(request);
+        return ResponseEntity.ok(result);
+    }
 }

@@ -32,6 +32,7 @@ public class TradeDto {
     private LocalDate birthDate;
     @JsonProperty("isSold")
     private boolean isSold;
+    private String dataPath;
     
     public TradeDto(Trade trade) {
         this.tradeId = trade.getTradeId();
@@ -52,5 +53,6 @@ public class TradeDto {
         this.batch = trade.getBatch();
         this.birthDate = trade.getBirthDate();
         this.isSold = trade.getIsSold();
+        this.dataPath = trade.getDataPath();
     }
 }

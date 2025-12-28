@@ -270,6 +270,10 @@ public class TradeService {
                                 .enableRowGroup(true)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter())
+                                .build(),
+
+                        ColDef.builder()
+                                .field("dataPath")
                                 .build()
 
                         )

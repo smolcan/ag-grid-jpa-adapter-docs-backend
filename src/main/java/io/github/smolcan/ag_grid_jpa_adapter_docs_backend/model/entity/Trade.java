@@ -86,6 +86,9 @@ public class Trade {
     
     @Column(name = "is_sold")
     private Boolean isSold;
+    
+    @Column(name = "data_path")
+    private String dataPath;
 
     @Override
     public boolean equals(Object obj) {
