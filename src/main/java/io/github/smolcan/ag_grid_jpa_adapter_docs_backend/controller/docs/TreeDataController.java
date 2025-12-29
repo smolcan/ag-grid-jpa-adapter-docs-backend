@@ -24,6 +24,18 @@ public class TreeDataController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("child-count/getRows")
+    public ResponseEntity<LoadSuccessParams> getChildCountRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.treeDataService.getChildCountRows(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("agg/getRows")
+    public ResponseEntity<LoadSuccessParams> getAggRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.treeDataService.getAggRows(request);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("filtering/getRows")
     public ResponseEntity<LoadSuccessParams> getFilteredRows(@RequestBody ServerSideGetRowsRequest request) {
         LoadSuccessParams result = this.treeDataService.getFilteredRows(request);

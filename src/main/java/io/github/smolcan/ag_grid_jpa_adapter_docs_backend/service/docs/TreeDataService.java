@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class TreeDataService {
 
     private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade> childCountQueryBuilder;
+    private final QueryBuilder<Trade> aggregationTreeQueryBuilder;
     private final QueryBuilder<Trade> filteringQueryBuilder;
     private final QueryBuilder<Trade> filteringAllQueryBuilder;
 
@@ -37,6 +39,12 @@ public class TreeDataService {
                                 .build(),
                         ColDef.builder()
                                 .field("portfolio")
+                                .build(),
+                        ColDef.builder()
+                                .field("currentValue")
+                                .build(),
+                        ColDef.builder()
+                                .field("previousValue")
                                 .build()
                 )
 
@@ -45,6 +53,63 @@ public class TreeDataService {
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField("parentTrade")
                 .treeDataChildrenField("childTrades")
+
+                .build();
+
+        this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("tradeId")
+                                .build(),
+                        ColDef.builder()
+                                .field("product")
+                                .build(),
+                        ColDef.builder()
+                                .field("portfolio")
+                                .build(),
+                        ColDef.builder()
+                                .field("currentValue")
+                                .build(),
+                        ColDef.builder()
+                                .field("previousValue")
+                                .build()
+                )
+
+                .treeData(true)
+                .getChildCount(true)
+                .getChildCountFieldName("childCount")
+                .primaryFieldName("tradeId")
+                .isServerSideGroupFieldName("hasChildren")
+                .treeDataParentReferenceField("parentTrade")
+                .treeDataChildrenField("childTrades")
+                .treeDataDataPathFieldName("dataPath")
+                .treeDataDataPathSeparator("/")
+
+                .build();
+
+        this.aggregationTreeQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("tradeId")
+                                .enableValue(true)
+                                .build(),
+                        ColDef.builder()
+                                .field("currentValue")
+                                .enableValue(true)
+                                .build(),
+                        ColDef.builder()
+                                .field("previousValue")
+                                .enableValue(true)
+                                .build()
+                )
+
+                .treeData(true)
+                .primaryFieldName("tradeId")
+                .isServerSideGroupFieldName("hasChildren")
+                .treeDataParentReferenceField("parentTrade")
+                .treeDataChildrenField("childTrades")
+                .treeDataDataPathFieldName("dataPath")
+                .treeDataDataPathSeparator("/")
 
                 .build();
 
@@ -133,6 +198,16 @@ public class TreeDataService {
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getChildCountRows(ServerSideGetRowsRequest request) {
+        return this.childCountQueryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getAggRows(ServerSideGetRowsRequest request) {
+        return this.aggregationTreeQueryBuilder.getRows(request);
     }
 
     @Transactional(readOnly = true)
