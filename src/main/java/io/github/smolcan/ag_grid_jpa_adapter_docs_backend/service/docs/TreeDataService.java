@@ -8,7 +8,10 @@ import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnF
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
+import io.github.smolcan.aggrid.jpa.adapter.utils.Utils;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ public class TreeDataService {
 
     private final QueryBuilder<Trade> queryBuilder;
     private final QueryBuilder<Trade> filteringQueryBuilder;
+    private final QueryBuilder<Trade> filteringAllQueryBuilder;
 
     @Autowired
     public TreeDataService(EntityManager entityManager) {
@@ -74,6 +78,55 @@ public class TreeDataService {
                 .treeDataDataPathSeparator("/")
 
                 .build();
+
+        this.filteringAllQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("tradeId")
+                                .build(),
+                        ColDef.builder()
+                                .field("product")
+                                .build(),
+                        ColDef.builder()
+                                .field("portfolio")
+                                .build(),
+                        ColDef.builder()
+                                .field("dataPath")
+                                .build()
+                )
+                
+                .enableAdvancedFilter(true)
+                .isQuickFilterPresent(true)
+                .quickFilterSearchInFields("tradeId", "product", "portfolio", "dataPath")
+                .isExternalFilterPresent(true)
+                .doesExternalFilterPass((cb, root, externalFilterValue) -> {
+                    if (externalFilterValue == null) {
+                        return null;
+                    }
+
+                    String externalFilter = (String) externalFilterValue;
+                    switch (externalFilter) {
+                        case "Trade Id Odd" -> {
+                            return cb.notEqual(cb.mod(root.get("tradeId"), 2), 0);
+                        }
+                        case "Trade Id Even" -> {
+                            return cb.equal(cb.mod(root.get("tradeId"), 2), 0);
+                        }
+                        default -> {
+                            return null;
+                        }
+                    }
+                })
+
+                .treeData(true)
+                .primaryFieldName("tradeId")
+                .isServerSideGroupFieldName("hasChildren")
+                .treeDataParentReferenceField("parentTrade")
+                .treeDataChildrenField("childTrades")
+                .treeDataDataPathFieldName("dataPath")
+                .treeDataDataPathSeparator("/")
+
+                .build();
     }
 
 
@@ -85,5 +138,10 @@ public class TreeDataService {
     @Transactional(readOnly = true)
     public LoadSuccessParams getFilteredRows(ServerSideGetRowsRequest request) {
         return this.filteringQueryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getFilteredAllRows(ServerSideGetRowsRequest request) {
+        return this.filteringAllQueryBuilder.getRows(request);
     }
 }
