@@ -147,12 +147,12 @@ public class AggregationService {
                                 .build(),
                         // numbers
                         ColDef.builder()
-                                .field("submitter.id")
+                                .field("currentValue")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),
                         ColDef.builder()
-                                .field("submitterDeal.id")
+                                .field("previousValue")
                                 .enableValue(true)
                                 .filter(new AgNumberColumnFilter())
                                 .build(),

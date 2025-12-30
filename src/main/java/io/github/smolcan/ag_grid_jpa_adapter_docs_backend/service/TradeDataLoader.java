@@ -88,6 +88,9 @@ public class TradeDataLoader implements CommandLineRunner {
         jdbcTemplate.execute(createTableSql);
         jdbcTemplate.execute("CREATE INDEX idx_trade_path ON trade(data_path)");
         jdbcTemplate.execute("CREATE INDEX idx_trade_parent ON trade(parent_trade_id)");
+        jdbcTemplate.execute("CREATE INDEX idx_trade_product ON trade(product)");
+        jdbcTemplate.execute("CREATE INDEX idx_trade_current_value ON trade(current_value)");
+        jdbcTemplate.execute("CREATE INDEX idx_trade_previous_value ON trade(previous_value)");
     }
 
     private void insertTradeData() {
