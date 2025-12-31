@@ -44,6 +44,12 @@ public class PaginationService {
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
+                        
+                        ColDef.builder()
+                                .field("book")
+                                .enableRowGroup(true)
+                                .filter(new AgTextColumnFilter())
+                                .build(),
 
                         ColDef.builder()
                                 .field("birthDate")
@@ -72,6 +78,12 @@ public class PaginationService {
 
                         ColDef.builder()
                                 .field("portfolio")
+                                .enableRowGroup(true)
+                                .filter(new AgTextColumnFilter())
+                                .build(),
+
+                        ColDef.builder()
+                                .field("book")
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
