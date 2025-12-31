@@ -27,7 +27,7 @@ public class PivotingService {
                         
                         
                         ColDef.builder()
-                                .field("portfolio")
+                                .field("book")
                                 .enablePivot(true)
                                 .build(),
                         
