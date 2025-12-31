@@ -105,9 +105,7 @@ public class TradeDataLoader implements CommandLineRunner {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
-        
         Map<Long, String> idToPathMap = new HashMap<>(TRADE_COUNT);
-
         int batchSize = 1000;
         int totalBatches = TRADE_COUNT / batchSize;
 
@@ -117,17 +115,14 @@ public class TradeDataLoader implements CommandLineRunner {
             for (int i = 0; i < batchSize; i++) {
                 long currentId = (long) (batch * batchSize + i + 1);
 
-                // Logika hierarchie (rodič musí mať nižšie ID ako dieťa, aby sme ho mali v mape)
                 Long parentId = null;
                 String currentPath;
 
                 if (currentId > 50 && random.nextDouble() > 0.3) {
-                    // Vyberieme náhodného existujúceho rodiča z už spracovaných ID
                     parentId = (long) (random.nextInt((int) currentId - 1) + 1);
                     String parentPath = idToPathMap.get(parentId);
                     currentPath = parentPath + PATH_SEPARATOR + currentId;
                 } else {
-                    // Root element
                     currentPath = String.valueOf(currentId);
                 }
 
@@ -135,6 +130,15 @@ public class TradeDataLoader implements CommandLineRunner {
 
                 Long submitterId = random.nextDouble() < 0.1 ? null : (long) (random.nextInt(SUBMITTER_COUNT) + 1);
                 Long dealId = random.nextDouble() < 0.1 ? null : (long) (random.nextInt(DEAL_COUNT) + 1);
+
+                // --- MODIFIED VALUES START ---
+                // pl1 and pl2: Profit/Loss usually ranges from negative to positive
+                double pl1 = (random.nextDouble() * 2000) - 1000; // Range: -1000 to +1000
+                double pl2 = (random.nextDouble() * 2000) - 1000;
+
+                // gain_dx: Represents a delta change, frequently negative
+                double gainDx = (random.nextDouble() * 500) - 250; // Range: -250 to +250
+                // --- MODIFIED VALUES END ---
 
                 Object[] row = new Object[]{
                         currentId, parentId, currentPath,
@@ -144,9 +148,13 @@ public class TradeDataLoader implements CommandLineRunner {
                         submitterId, dealId,
                         "Type " + (random.nextInt(3) + 1),
                         "Bid " + (random.nextInt(2) + 1),
-                        random.nextDouble() * 10000, random.nextDouble() * 10000,
-                        random.nextDouble() * 100, random.nextDouble() * 100,
-                        random.nextDouble() * 50, random.nextDouble() * 50, random.nextDouble() * 50,
+                        random.nextDouble() * 10000,
+                        random.nextDouble() * 10000,
+                        pl1,       // Now supports negative
+                        pl2,       // Now supports negative
+                        gainDx,    // Now supports negative
+                        random.nextDouble() * 50,
+                        random.nextDouble() * 50,
                         (int) (currentId % 100),
                         LocalDate.now().minusDays(currentId % 365),
                         (currentId % 2) == 0
@@ -159,7 +167,7 @@ public class TradeDataLoader implements CommandLineRunner {
                 System.out.println("Inserted " + ((batch + 1) * batchSize) + " records...");
             }
         }
-        idToPathMap.clear(); // Uvoľnenie pamäte
+        idToPathMap.clear();
     }
 
     // Ostatné metódy (insertSubmitters, addForeignKeyConstraints...) ostávajú podobné

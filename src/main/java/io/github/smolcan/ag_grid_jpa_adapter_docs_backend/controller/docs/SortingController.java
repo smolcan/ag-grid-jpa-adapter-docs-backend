@@ -22,6 +22,12 @@ public class SortingController {
         LoadSuccessParams result = this.sortingService.getRows(request);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("absolute/getRows")
+    public ResponseEntity<LoadSuccessParams> getAbsoluteRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.sortingService.getAbsoluteRows(request);
+        return ResponseEntity.ok(result);
+    }
     
     
 }

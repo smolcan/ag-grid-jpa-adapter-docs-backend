@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SortingService {
     
     private final QueryBuilder<Trade> sortingQueryBuilder;
-    
+    private final QueryBuilder<Trade> sortingAbsoluteQueryBuilder;
+
     @Autowired
     public SortingService(EntityManager entityManager) {
         this.sortingQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
@@ -42,12 +43,37 @@ public class SortingService {
                                 .build()
                         )
                 .build();
+
+        this.sortingAbsoluteQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        // enabled sorting
+                        ColDef.builder()
+                                .field("tradeId")
+                                .filter(false)
+                                .build(),
+                        // disabled sorting
+                        ColDef.builder()
+                                .field("pl1")
+                                .filter(false)
+                                .build(),
+                        // disabled sorting - throws
+                        ColDef.builder()
+                                .field("pl2")
+                                .filter(false)
+                                .build()
+                )
+                .build();
     }
 
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.sortingQueryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getAbsoluteRows(ServerSideGetRowsRequest request) {
+        return this.sortingAbsoluteQueryBuilder.getRows(request);
     }
     
 }
