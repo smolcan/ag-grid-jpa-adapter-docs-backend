@@ -144,7 +144,7 @@ public class TradeDataLoader implements CommandLineRunner {
                         currentId, parentId, currentPath,
                         "Product " + (random.nextInt(10) + 1),
                         "Portfolio " + (random.nextInt(10) + 1),
-                        "Book " + (random.nextInt(5) + 1),
+                        "Book " + (random.nextInt(3) + 1),
                         submitterId, dealId,
                         "Type " + (random.nextInt(3) + 1),
                         "Bid " + (random.nextInt(2) + 1),

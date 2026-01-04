@@ -24,6 +24,10 @@ public class PivotingService {
                                 .field("product")
                                 .enableRowGroup(true)
                                 .build(),
+                        ColDef.builder()
+                                .field("portfolio")
+                                .enableRowGroup(true)
+                                .build(),
                         
                         
                         ColDef.builder()
