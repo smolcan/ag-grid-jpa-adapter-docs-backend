@@ -22,5 +22,11 @@ public class DateFilterController {
         LoadSuccessParams result = this.dateFilterService.getRows(request);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("relative/getRows")
+    public ResponseEntity<LoadSuccessParams> getRelativeRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.dateFilterService.getRelativeRows(request);
+        return ResponseEntity.ok(result);
+    }
     
 }

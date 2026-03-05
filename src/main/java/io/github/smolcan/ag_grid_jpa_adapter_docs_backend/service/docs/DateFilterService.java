@@ -16,10 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+import static io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.SimpleFilterModelType.*;
+
 @Service
 public class DateFilterService {
 
     private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade> relativeDateQueryBuilder;
 
     @Autowired
     public DateFilterService(EntityManager entityManager) {
@@ -50,10 +53,59 @@ public class DateFilterService {
                                 .build()
                 )
                 .build();
+
+        this.relativeDateQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("tradeId")
+                                .filter(false)
+                                .build(),
+                        ColDef.builder()
+                                .field("birthDate")
+                                .filter(
+                                        new AgDateColumnFilter()
+                                                .filterParams(
+                                                        DateFilterParams.builder()
+                                                                .filterOptions(
+                                                                        today,
+                                                                        yesterday,
+                                                                        tomorrow,
+                                                                        thisWeek,
+                                                                        lastWeek,
+                                                                        // using next week will throw exception, not listed
+//                                                                        nextWeek,
+                                                                        thisMonth,
+                                                                        lastMonth,
+                                                                        nextMonth,
+                                                                        thisQuarter,
+                                                                        lastQuarter,
+                                                                        nextQuarter,
+                                                                        thisYear,
+                                                                        lastYear,
+                                                                        nextYear,
+                                                                        yearToDate,
+                                                                        last7Days,
+                                                                        last30Days,
+                                                                        last90Days,
+                                                                        last6Months,
+                                                                        last12Months,
+                                                                        last24Months
+                                                                )
+                                                                .build()
+                                                )
+                                )
+                                .build()
+                )
+                .build();
     }
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getRelativeRows(ServerSideGetRowsRequest request) {
+        return this.relativeDateQueryBuilder.getRows(request);
     }
 }
