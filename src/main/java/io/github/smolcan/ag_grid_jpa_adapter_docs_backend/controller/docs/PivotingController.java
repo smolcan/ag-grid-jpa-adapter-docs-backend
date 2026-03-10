@@ -22,5 +22,11 @@ public class PivotingController {
         LoadSuccessParams result = this.pivotingService.getRows(request);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("limit-col-gen/getRows")
+    public ResponseEntity<LoadSuccessParams> getRowsLimitColGen(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.pivotingService.getRowsLimitColGen(request);
+        return ResponseEntity.ok(result);
+    }
     
 }

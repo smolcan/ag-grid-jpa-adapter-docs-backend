@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PivotingService {
 
     private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade> limitQueryBuilder;
     
     @Autowired
     public PivotingService(EntityManager entityManager) {
@@ -45,18 +46,51 @@ public class PivotingService {
                                 .build()
                 )
                 .build();
+
+        this.limitQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder()
+                                .field("product")
+                                .enableRowGroup(true)
+                                .build(),
+                        ColDef.builder()
+                                .field("portfolio")
+                                .enableRowGroup(true)
+                                .build(),
+
+
+                        ColDef.builder()
+                                .field("book")
+                                .enablePivot(true)
+                                .build(),
+                        ColDef.builder()
+                                .field("bidType")
+                                .enablePivot(true)
+                                .build(),
+
+                        ColDef.builder()
+                                .field("currentValue")
+                                .enableValue(true)
+                                .build(),
+                        ColDef.builder()
+                                .field("previousValue")
+                                .enableValue(true)
+                                .build()
+                )
+                .pivotMaxGeneratedColumns(10)
+                .build();
     }
 
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
-        try {
-            return this.queryBuilder.getRows(request);
-        } catch (OnPivotMaxColumnsExceededException e) {
-            throw new RuntimeException(e);
-        }
+        return this.queryBuilder.getRows(request);
     }
-    
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getRowsLimitColGen(ServerSideGetRowsRequest request) {
+        return this.limitQueryBuilder.getRows(request);
+    }
     
     
     
