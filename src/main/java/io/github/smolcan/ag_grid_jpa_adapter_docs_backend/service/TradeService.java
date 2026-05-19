@@ -1,7 +1,5 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilter;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilterParams;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
@@ -23,6 +21,7 @@ import jakarta.persistence.criteria.Expression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -289,7 +288,7 @@ public class TradeService {
     }
 
     @Transactional(readOnly = true)
-    public LoadSuccessParams getRows(ServerSideGetRowsRequest request) throws JsonProcessingException {
+    public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         LOGGER.info("getRows called, received request: ");
         LOGGER.info(OBJECT_MAPPER.writeValueAsString(request));
         LOGGER.info("executing...: ");
@@ -297,8 +296,7 @@ public class TradeService {
     }
 
     @Transactional(readOnly = true)
-    public long countRows(ServerSideGetRowsRequest request)
-            throws JsonProcessingException {
+    public long countRows(ServerSideGetRowsRequest request) {
         LOGGER.info("countRows called, received request: ");
         LOGGER.info(OBJECT_MAPPER.writeValueAsString(request));
         LOGGER.info("executing...: ");

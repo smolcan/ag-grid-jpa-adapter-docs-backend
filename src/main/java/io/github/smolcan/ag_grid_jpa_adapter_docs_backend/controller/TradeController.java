@@ -1,6 +1,5 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.TradeDto;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.TradeService;
 
@@ -32,13 +31,13 @@ public class TradeController {
     }
     
     @PostMapping("/getRows")
-    public ResponseEntity<LoadSuccessParams> getRows(@RequestBody ServerSideGetRowsRequest request) throws JsonProcessingException {
+    public ResponseEntity<LoadSuccessParams> getRows(@RequestBody ServerSideGetRowsRequest request) {
         LoadSuccessParams result = this.tradeService.getRows(request);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/countRows")
-    public ResponseEntity<Long> countRows(@RequestBody ServerSideGetRowsRequest request) throws JsonProcessingException {
+    public ResponseEntity<Long> countRows(@RequestBody ServerSideGetRowsRequest request) {
         long result = this.tradeService.countRows(request);
         return ResponseEntity.ok(result);
     }
