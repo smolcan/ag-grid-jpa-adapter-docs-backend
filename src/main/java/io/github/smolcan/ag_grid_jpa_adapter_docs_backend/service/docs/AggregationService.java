@@ -31,13 +31,13 @@ public class AggregationService {
         this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.book)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         // numbers
                         ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
@@ -59,13 +59,13 @@ public class AggregationService {
         this.queryBuilderCustomAggregation = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.book)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         // numbers
                         ColDef.builder(Trade_.currentValue)
@@ -90,13 +90,13 @@ public class AggregationService {
         this.queryBuilderSuppressAggFilteredOnly = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.book)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         // numbers
                         ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
@@ -119,13 +119,13 @@ public class AggregationService {
         this.queryBuilderGroupAggFiltering = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.book)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         // numbers
                         ColDef.builder(Trade_.currentValue)

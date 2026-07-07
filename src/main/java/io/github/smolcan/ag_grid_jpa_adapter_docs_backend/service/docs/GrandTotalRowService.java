@@ -29,7 +29,7 @@ public class GrandTotalRowService {
                 .colDefs(
 
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 

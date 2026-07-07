@@ -136,7 +136,7 @@ public class MasterDetailService {
                 )
 
                 .masterDetail(true)
-                .dynamicMasterDetailParams((masterRow) -> {
+                .dynamicMasterDetailParams(masterRow -> {
                     long submitterId = Long.parseLong(String.valueOf(masterRow.get("id")));
                     if (submitterId % 2 == 0) {
                         return QueryBuilder.MasterDetailParams.<Submitter, Long, Trade>builder()
@@ -178,6 +178,7 @@ public class MasterDetailService {
 
                 // tree data config
                 .treeData(true)
+                .treeDataStringToParentIdTypeConverter(Long::valueOf)
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField(Trade_.parentTrade)
                 .treeDataChildrenField(Trade_.childTrades)

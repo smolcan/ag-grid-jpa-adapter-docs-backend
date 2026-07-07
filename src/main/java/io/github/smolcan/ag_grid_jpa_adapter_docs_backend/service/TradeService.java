@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -45,7 +47,7 @@ public class TradeService {
                         // trade id
                         ColDef.builder(Trade_.tradeId)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, Long::valueOf)
                                 .enablePivot(true)
                                 .filter(new AgMultiColumnFilter<Long>()
                                         .filterParams(
@@ -68,7 +70,7 @@ public class TradeService {
                         // product
                         ColDef.builder(Trade_.product)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .enablePivot(true)
                                 .filter(new AgMultiColumnFilter<String>()
                                         .filterParams(
@@ -91,7 +93,7 @@ public class TradeService {
                         // birthDate
                         ColDef.builder(Trade_.birthDate)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> LocalDate.parse(key, DateTimeFormatter.ISO_LOCAL_DATE))
                                 .enablePivot(true)
                                 .filter(new AgMultiColumnFilter<LocalDate>()
                                         .filterParams(
@@ -108,7 +110,7 @@ public class TradeService {
                         // isSold
                         ColDef.builder(Trade_.isSold)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, Boolean::valueOf)
                                 .enablePivot(true)
                                 .filter(AgSetColumnFilter.forBoolean())
                                 .build(),
@@ -116,7 +118,7 @@ public class TradeService {
                         // Portfolio with text filter
                         ColDef.builder(Trade_.portfolio)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .enablePivot(true)
                                 .filter(
                                         new AgTextColumnFilter()
@@ -141,7 +143,7 @@ public class TradeService {
                         // Book with text filter
                         ColDef.builder(Trade_.book)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .enablePivot(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
@@ -149,7 +151,7 @@ public class TradeService {
                         // Submitter ID with multi-column filter
                         ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, Long::valueOf)
                                 .enablePivot(true)
                                 .filter(new AgMultiColumnFilter<Long>()
                                         .filterParams(
@@ -166,7 +168,7 @@ public class TradeService {
                         // Submitter Deal ID with number filter
                         ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, Long::valueOf)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -174,7 +176,7 @@ public class TradeService {
                         // Deal Type with text filter
                         ColDef.builder(Trade_.dealType)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .enablePivot(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
@@ -182,7 +184,7 @@ public class TradeService {
                         // Bid Type with text filter
                         ColDef.builder(Trade_.bidType)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .enablePivot(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
@@ -190,7 +192,7 @@ public class TradeService {
                         // Current Value with number filter
                         ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -198,7 +200,7 @@ public class TradeService {
                         // Previous Value with number filter
                         ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -206,7 +208,7 @@ public class TradeService {
                         // PL1 with number filter
                         ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.pl1))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -214,7 +216,7 @@ public class TradeService {
                         // PL2 with number filter
                         ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.pl2))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -222,7 +224,7 @@ public class TradeService {
                         // Gain Dx with number filter
                         ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.gainDx))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -230,7 +232,7 @@ public class TradeService {
                         // SX Px with number filter
                         ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.sxPx))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -238,7 +240,7 @@ public class TradeService {
                         // X99 Out with number filter
                         ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.x99Out))
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, BigDecimal::new)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
@@ -246,7 +248,7 @@ public class TradeService {
                         // Batch with number filter
                         ColDef.builder(Trade_.batch)
                                 .enableValue(true)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, Integer::valueOf)
                                 .enablePivot(true)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),

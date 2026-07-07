@@ -40,12 +40,12 @@ public class PaginationService {
                                 .build(),
 
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
                         ColDef.builder(Trade_.book)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
@@ -72,12 +72,12 @@ public class PaginationService {
                                 .build(),
 
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
                         ColDef.builder(Trade_.book)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 

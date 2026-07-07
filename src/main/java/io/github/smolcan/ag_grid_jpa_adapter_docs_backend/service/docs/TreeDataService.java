@@ -42,6 +42,7 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
+                .treeDataStringToParentIdTypeConverter(Long::valueOf)
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField(Trade_.parentTrade)
                 .treeDataChildrenField(Trade_.childTrades)
@@ -63,6 +64,7 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
+                .treeDataStringToParentIdTypeConverter(Long::valueOf)
                 .getChildCount(true)
                 .getChildCountFieldName("childCount")
                 .isServerSideGroupFieldName("hasChildren")
@@ -87,6 +89,7 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
+                .treeDataStringToParentIdTypeConverter(Long::valueOf)
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField(Trade_.parentTrade)
                 .treeDataChildrenField(Trade_.childTrades)
@@ -113,6 +116,7 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
+                .treeDataStringToParentIdTypeConverter(Long::valueOf)
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField(Trade_.parentTrade)
                 .treeDataChildrenField(Trade_.childTrades)
@@ -161,6 +165,7 @@ public class TreeDataService {
                 })
 
                 .treeData(true)
+                .treeDataStringToParentIdTypeConverter(Long::valueOf)
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField(Trade_.parentTrade)
                 .treeDataChildrenField(Trade_.childTrades)

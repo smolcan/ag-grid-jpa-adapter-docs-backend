@@ -28,12 +28,12 @@ public class RowGroupingService {
                                 .build(),
 
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build()
                 )
@@ -46,12 +46,12 @@ public class RowGroupingService {
                                 .build(),
 
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .filter(new AgTextColumnFilter())
                                 .build()
                 )

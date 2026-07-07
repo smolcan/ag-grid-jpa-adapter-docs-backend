@@ -22,10 +22,10 @@ public class PivotingService {
         this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
 
 
@@ -45,10 +45,10 @@ public class PivotingService {
         this.limitQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true)
+                                .enableRowGroup(true, key -> key)
                                 .build(),
 
 
