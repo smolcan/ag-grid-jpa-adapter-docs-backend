@@ -2,10 +2,7 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilter;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilterParams;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.*;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.MultiFilterParams;
@@ -207,7 +204,7 @@ public class TradeService {
                                 .build(),
 
                         // PL1 with number filter
-                        ColDef.builder(Trade_.pl1)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.pl1))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -215,7 +212,7 @@ public class TradeService {
                                 .build(),
 
                         // PL2 with number filter
-                        ColDef.builder(Trade_.pl2)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.pl2))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -223,7 +220,7 @@ public class TradeService {
                                 .build(),
 
                         // Gain Dx with number filter
-                        ColDef.builder(Trade_.gainDx)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.gainDx))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -231,7 +228,7 @@ public class TradeService {
                                 .build(),
 
                         // SX Px with number filter
-                        ColDef.builder(Trade_.sxPx)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.sxPx))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -239,7 +236,7 @@ public class TradeService {
                                 .build(),
 
                         // X99 Out with number filter
-                        ColDef.builder(Trade_.x99Out)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.x99Out))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
