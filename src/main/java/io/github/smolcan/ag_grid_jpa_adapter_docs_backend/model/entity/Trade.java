@@ -56,20 +56,8 @@ public class Trade {
     @Column(name = "previous_value")
     private BigDecimal previousValue;
 
-    @Column(name = "pl1")
-    private BigDecimal pl1;
-
-    @Column(name = "pl2")
-    private BigDecimal pl2;
-
-    @Column(name = "gain_dx")
-    private BigDecimal gainDx;
-
-    @Column(name = "sx_px")
-    private BigDecimal sxPx;
-
-    @Column(name = "x99_out")
-    private BigDecimal x99Out;
+    @Embedded
+    private Statistics statistics;
 
     @Column(name = "batch")
     private Integer batch;

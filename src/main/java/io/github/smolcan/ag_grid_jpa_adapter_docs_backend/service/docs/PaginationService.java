@@ -20,12 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PaginationService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> paginateChildRowsQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> paginateChildRowsQueryBuilder;
 
     @Autowired
     public PaginationService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .filter(
@@ -57,7 +57,7 @@ public class PaginationService {
                 )
                 .build();
 
-        this.paginateChildRowsQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.paginateChildRowsQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .filter(

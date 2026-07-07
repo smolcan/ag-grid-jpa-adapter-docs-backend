@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RowGroupingService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> childCountQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> childCountQueryBuilder;
 
     @Autowired
     public RowGroupingService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .filter(new AgNumberColumnFilter<>())
@@ -39,7 +39,7 @@ public class RowGroupingService {
                 )
                 .build();
 
-        this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .filter(new AgNumberColumnFilter<>())

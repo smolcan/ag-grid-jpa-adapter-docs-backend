@@ -22,16 +22,16 @@ import java.util.Optional;
 @Service
 public class MasterDetailService {
 
-    private final QueryBuilder<Submitter, Trade> basicQueryBuilder;
-    private final QueryBuilder<Submitter, Trade> eagerQueryBuilder;
-    private final QueryBuilder<Trade, Trade> customDetailConditionQueryBuilder;
-    private final QueryBuilder<Submitter, Trade> dynamicDetailQueryBuilder;
-    private final QueryBuilder<Trade, Trade> treeDataMasterDetailQueryBuilder;
+    private final QueryBuilder<Submitter, Long, Trade> basicQueryBuilder;
+    private final QueryBuilder<Submitter, Long, Trade> eagerQueryBuilder;
+    private final QueryBuilder<Trade, Long, Trade> customDetailConditionQueryBuilder;
+    private final QueryBuilder<Submitter, Long, Trade> dynamicDetailQueryBuilder;
+    private final QueryBuilder<Trade, Long, Trade> treeDataMasterDetailQueryBuilder;
 
     @Autowired
     public MasterDetailService(EntityManager entityManager) {
 
-        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, Trade.class, entityManager)
+        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
                 .colDefs(
                         ColDef.builder(Submitter_.id)
                                 .build(),
@@ -40,9 +40,8 @@ public class MasterDetailService {
                 )
 
                 .masterDetail(true)
-                .primaryFieldName("id")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
+                        QueryBuilder.MasterDetailParams.<Submitter, Long, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)
@@ -57,7 +56,7 @@ public class MasterDetailService {
                 )
                 .build();
 
-        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, Trade.class, entityManager)
+        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
                 .colDefs(
                         ColDef.builder(Submitter_.id)
                                 .build(),
@@ -68,9 +67,8 @@ public class MasterDetailService {
                 .masterDetail(true)
                 .masterDetailLazy(false)
                 .masterDetailRowDataFieldName("detailRows")
-                .primaryFieldName("id")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
+                        QueryBuilder.MasterDetailParams.<Submitter, Long, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)
@@ -85,7 +83,7 @@ public class MasterDetailService {
                 )
                 .build();
 
-        this.customDetailConditionQueryBuilder = QueryBuilder.builder(Trade.class, Trade.class, entityManager)
+        this.customDetailConditionQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, Trade.class, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -96,9 +94,8 @@ public class MasterDetailService {
                 )
 
                 .masterDetail(true)
-                .primaryFieldName("tradeId")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.<Trade, Trade>builder()
+                        QueryBuilder.MasterDetailParams.<Trade, Long, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)
@@ -130,7 +127,7 @@ public class MasterDetailService {
                 .build();
 
 
-        this.dynamicDetailQueryBuilder = QueryBuilder.builder(Submitter.class, Trade.class, entityManager)
+        this.dynamicDetailQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
                 .colDefs(
                         ColDef.builder(Submitter_.id)
                                 .build(),
@@ -139,11 +136,10 @@ public class MasterDetailService {
                 )
 
                 .masterDetail(true)
-                .primaryFieldName("id")
                 .dynamicMasterDetailParams((masterRow) -> {
                     long submitterId = Long.parseLong(String.valueOf(masterRow.get("id")));
                     if (submitterId % 2 == 0) {
-                        return QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
+                        return QueryBuilder.MasterDetailParams.<Submitter, Long, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)
@@ -154,7 +150,7 @@ public class MasterDetailService {
                                 .detailMasterReferenceField(Trade_.submitter)
                                 .build();
                     } else {
-                        return QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
+                        return QueryBuilder.MasterDetailParams.<Submitter, Long, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)
@@ -168,7 +164,7 @@ public class MasterDetailService {
                 })
                 .build();
 
-        this.treeDataMasterDetailQueryBuilder = QueryBuilder.builder(Trade.class, Trade.class, entityManager)
+        this.treeDataMasterDetailQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, Trade.class, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -182,16 +178,14 @@ public class MasterDetailService {
 
                 // tree data config
                 .treeData(true)
-                .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeDataParentReferenceField("parentTrade")
-                .treeDataChildrenField("childTrades")
+                .treeDataParentReferenceField(Trade_.parentTrade)
+                .treeDataChildrenField(Trade_.childTrades)
 
                 // master/detail config
                 .masterDetail(true)
-                .primaryFieldName("tradeId")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.<Trade, Trade>builder()
+                        QueryBuilder.MasterDetailParams.<Trade, Long, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)

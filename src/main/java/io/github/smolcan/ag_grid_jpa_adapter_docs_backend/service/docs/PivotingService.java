@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PivotingService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> limitQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> limitQueryBuilder;
 
     @Autowired
     public PivotingService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
@@ -42,7 +42,7 @@ public class PivotingService {
                 )
                 .build();
 
-        this.limitQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.limitQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)

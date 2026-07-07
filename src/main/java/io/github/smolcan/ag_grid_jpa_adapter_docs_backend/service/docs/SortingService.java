@@ -1,8 +1,10 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Statistics_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -16,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SortingService {
 
-    private final QueryBuilder<Trade, Void> sortingQueryBuilder;
-    private final QueryBuilder<Trade, Void> sortingAbsoluteQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> sortingQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> sortingAbsoluteQueryBuilder;
 
     @Autowired
     public SortingService(EntityManager entityManager) {
-        this.sortingQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.sortingQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         // enabled sorting
                         ColDef.builder(Trade_.tradeId)
@@ -38,16 +40,16 @@ public class SortingService {
                         )
                 .build();
 
-        this.sortingAbsoluteQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.sortingAbsoluteQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         // enabled sorting
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
                         // disabled sorting
-                        ColDef.builder(Trade_.pl1)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.pl1))
                                 .build(),
                         // disabled sorting - throws
-                        ColDef.builder(Trade_.pl2)
+                        ColDef.builder(FieldPath.of(Trade_.statistics).to(Statistics_.pl2))
                                 .build()
                 )
                 .build();

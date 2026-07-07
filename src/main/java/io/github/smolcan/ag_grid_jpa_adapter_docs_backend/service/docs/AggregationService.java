@@ -21,14 +21,14 @@ import java.math.BigDecimal;
 @Service
 public class AggregationService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> queryBuilderSuppressAggFilteredOnly;
-    private final QueryBuilder<Trade, Void> queryBuilderGroupAggFiltering;
-    private final QueryBuilder<Trade, Void> queryBuilderCustomAggregation;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilderSuppressAggFilteredOnly;
+    private final QueryBuilder<Trade, Long, Void> queryBuilderGroupAggFiltering;
+    private final QueryBuilder<Trade, Long, Void> queryBuilderCustomAggregation;
 
     @Autowired
     public AggregationService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
@@ -56,7 +56,7 @@ public class AggregationService {
                 )
                 .build();
 
-        this.queryBuilderCustomAggregation = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilderCustomAggregation = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
@@ -87,7 +87,7 @@ public class AggregationService {
                 .registerCustomAggFunction("stddev_samp", (cb, expr) -> cb.function("STDDEV_SAMP", BigDecimal.class, expr))
                 .build();
 
-        this.queryBuilderSuppressAggFilteredOnly = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilderSuppressAggFilteredOnly = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
@@ -116,7 +116,7 @@ public class AggregationService {
                 .suppressAggFilteredOnly(true)
                 .build();
 
-        this.queryBuilderGroupAggFiltering = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilderGroupAggFiltering = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)

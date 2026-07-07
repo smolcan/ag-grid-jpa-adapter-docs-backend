@@ -19,12 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DotNotationService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> flatDataQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> flatDataQueryBuilder;
 
     @Autowired
     public DotNotationService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -39,7 +39,7 @@ public class DotNotationService {
                 )
                 .build();
 
-        this.flatDataQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.flatDataQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
