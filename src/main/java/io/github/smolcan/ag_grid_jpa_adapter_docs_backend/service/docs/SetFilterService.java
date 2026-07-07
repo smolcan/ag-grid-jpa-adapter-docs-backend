@@ -22,11 +22,11 @@ import java.util.List;
 
 @Service
 public class SetFilterService {
-    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
 
     @Autowired
     public SetFilterService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),

@@ -22,12 +22,12 @@ import static io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.SimpleFil
 @Service
 public class DateFilterService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> relativeDateQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> relativeDateQueryBuilder;
 
     @Autowired
     public DateFilterService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -52,7 +52,7 @@ public class DateFilterService {
                 )
                 .build();
 
-        this.relativeDateQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.relativeDateQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),

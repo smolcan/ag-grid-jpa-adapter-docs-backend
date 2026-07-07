@@ -18,16 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TreeDataService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> childCountQueryBuilder;
-    private final QueryBuilder<Trade, Void> aggregationTreeQueryBuilder;
-    private final QueryBuilder<Trade, Void> filteringQueryBuilder;
-    private final QueryBuilder<Trade, Void> filteringAllQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> childCountQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> aggregationTreeQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> filteringQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> filteringAllQueryBuilder;
 
     @Autowired
     public TreeDataService(EntityManager entityManager) {
 
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -42,14 +42,13 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
-                .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeDataParentReferenceField("parentTrade")
-                .treeDataChildrenField("childTrades")
+                .treeDataParentReferenceField(Trade_.parentTrade)
+                .treeDataChildrenField(Trade_.childTrades)
 
                 .build();
 
-        this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -66,16 +65,15 @@ public class TreeDataService {
                 .treeData(true)
                 .getChildCount(true)
                 .getChildCountFieldName("childCount")
-                .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeDataParentReferenceField("parentTrade")
-                .treeDataChildrenField("childTrades")
-                .treeDataDataPathFieldName("dataPath")
+                .treeDataParentReferenceField(Trade_.parentTrade)
+                .treeDataChildrenField(Trade_.childTrades)
+                .treeDataDataPathFieldName(Trade_.dataPath)
                 .treeDataDataPathSeparator("/")
 
                 .build();
 
-        this.aggregationTreeQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.aggregationTreeQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .enableValue(true)
@@ -89,17 +87,16 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
-                .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeDataParentReferenceField("parentTrade")
-                .treeDataChildrenField("childTrades")
-                .treeDataDataPathFieldName("dataPath")
+                .treeDataParentReferenceField(Trade_.parentTrade)
+                .treeDataChildrenField(Trade_.childTrades)
+                .treeDataDataPathFieldName(Trade_.dataPath)
                 .treeDataDataPathSeparator("/")
 
                 .build();
 
 
-        this.filteringQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.filteringQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .filter(new AgNumberColumnFilter<>())
@@ -116,16 +113,15 @@ public class TreeDataService {
                 )
 
                 .treeData(true)
-                .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeDataParentReferenceField("parentTrade")
-                .treeDataChildrenField("childTrades")
-                .treeDataDataPathFieldName("dataPath")
+                .treeDataParentReferenceField(Trade_.parentTrade)
+                .treeDataChildrenField(Trade_.childTrades)
+                .treeDataDataPathFieldName(Trade_.dataPath)
                 .treeDataDataPathSeparator("/")
 
                 .build();
 
-        this.filteringAllQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.filteringAllQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
@@ -165,11 +161,10 @@ public class TreeDataService {
                 })
 
                 .treeData(true)
-                .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
-                .treeDataParentReferenceField("parentTrade")
-                .treeDataChildrenField("childTrades")
-                .treeDataDataPathFieldName("dataPath")
+                .treeDataParentReferenceField(Trade_.parentTrade)
+                .treeDataChildrenField(Trade_.childTrades)
+                .treeDataDataPathFieldName(Trade_.dataPath)
                 .treeDataDataPathSeparator("/")
 
                 .build();

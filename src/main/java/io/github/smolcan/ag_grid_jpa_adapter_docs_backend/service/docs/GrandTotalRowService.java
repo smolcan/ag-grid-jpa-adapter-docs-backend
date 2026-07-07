@@ -20,12 +20,12 @@ import java.util.Map;
 @Service
 public class GrandTotalRowService {
 
-    private final QueryBuilder<Trade, Void> queryBuilder;
-    private final QueryBuilder<Trade, Void> queryBuilderAsync;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilderAsync;
 
     @Autowired
     public GrandTotalRowService(EntityManager entityManager) {
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
 
                         ColDef.builder(Trade_.product)
@@ -49,7 +49,7 @@ public class GrandTotalRowService {
                 .grandTotalRow(true)
                 .build();
 
-        this.queryBuilderAsync = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilderAsync = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),

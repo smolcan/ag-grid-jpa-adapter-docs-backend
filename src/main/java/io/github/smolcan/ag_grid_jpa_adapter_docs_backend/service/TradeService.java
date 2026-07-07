@@ -35,12 +35,12 @@ public class TradeService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final EntityManager entityManager;
-    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Long, Void> queryBuilder;
 
     @Autowired
     public TradeService(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+        this.queryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
                 .colDefs(
                         // trade id
                         ColDef.builder(Trade_.tradeId)
