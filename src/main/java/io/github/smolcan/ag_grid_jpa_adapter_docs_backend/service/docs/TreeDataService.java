@@ -1,17 +1,15 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
-import io.github.smolcan.aggrid.jpa.adapter.utils.Utils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,31 +18,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TreeDataService {
 
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> childCountQueryBuilder;
-    private final QueryBuilder<Trade> aggregationTreeQueryBuilder;
-    private final QueryBuilder<Trade> filteringQueryBuilder;
-    private final QueryBuilder<Trade> filteringAllQueryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> childCountQueryBuilder;
+    private final QueryBuilder<Trade, Void> aggregationTreeQueryBuilder;
+    private final QueryBuilder<Trade, Void> filteringQueryBuilder;
+    private final QueryBuilder<Trade, Void> filteringAllQueryBuilder;
 
     @Autowired
     public TreeDataService(EntityManager entityManager) {
 
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .build(),
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .build()
                 )
 
@@ -58,20 +51,15 @@ public class TreeDataService {
 
         this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .build(),
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .build()
                 )
 
@@ -89,16 +77,13 @@ public class TreeDataService {
 
         this.aggregationTreeQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .enableValue(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
                                 .build()
                 )
@@ -116,20 +101,16 @@ public class TreeDataService {
 
         this.filteringQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(new AgNumberColumnFilter())
+                        ColDef.builder(Trade_.tradeId)
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
-                        ColDef.builder()
-                                .field("dataPath")
+                        ColDef.builder(Trade_.dataPath)
                                 .filter(new AgTextColumnFilter())
                                 .build()
                 )
@@ -146,23 +127,23 @@ public class TreeDataService {
 
         this.filteringAllQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .build(),
-                        ColDef.builder()
-                                .field("dataPath")
+                        ColDef.builder(Trade_.dataPath)
                                 .build()
                 )
-                
+
                 .enableAdvancedFilter(true)
                 .isQuickFilterPresent(true)
-                .quickFilterSearchInFields("tradeId", "product", "portfolio", "dataPath")
+                .quickFilterSearchInFields(
+                        FieldPath.of(Trade_.product),
+                        FieldPath.of(Trade_.portfolio),
+                        FieldPath.of(Trade_.dataPath)
+                )
                 .isExternalFilterPresent(true)
                 .doesExternalFilterPass((cb, root, externalFilterValue) -> {
                     if (externalFilterValue == null) {

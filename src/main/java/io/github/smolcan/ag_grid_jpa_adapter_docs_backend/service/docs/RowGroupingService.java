@@ -1,8 +1,8 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
@@ -16,26 +16,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RowGroupingService {
 
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> childCountQueryBuilder;
-    
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> childCountQueryBuilder;
+
     @Autowired
     public RowGroupingService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(new AgNumberColumnFilter())
+                        ColDef.builder(Trade_.tradeId)
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build()
@@ -44,19 +41,16 @@ public class RowGroupingService {
 
         this.childCountQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(new AgNumberColumnFilter())
+                        ColDef.builder(Trade_.tradeId)
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build()

@@ -1,8 +1,8 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.MultiFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.AgMultiColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.AgSetColumnFilter;
@@ -16,47 +16,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
 @Service
 public class MultiFilterService {
-    
-    private final QueryBuilder<Trade> queryBuilder;
+
+    private final QueryBuilder<Trade, Void> queryBuilder;
 
     @Autowired
     public MultiFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
 
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .filter(
-                                        new AgMultiColumnFilter()
+                                        new AgMultiColumnFilter<String>()
                                                 .filterParams(
-                                                        MultiFilterParams.builder()
+                                                        MultiFilterParams.<String>builder()
                                                                 .filters(
                                                                         new AgTextColumnFilter(),
-                                                                        new AgSetColumnFilter()
+                                                                        AgSetColumnFilter.forString()
                                                                 )
                                                                 .build()
                                                 )
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .filter(
-                                        new AgMultiColumnFilter()
+                                        new AgMultiColumnFilter<LocalDate>()
                                                 .filterParams(
-                                                        MultiFilterParams.builder()
+                                                        MultiFilterParams.<LocalDate>builder()
                                                                 .filters(
-                                                                        new AgDateColumnFilter(),
-                                                                        new AgSetColumnFilter()
+                                                                        AgDateColumnFilter.forLocalDate(),
+                                                                        AgSetColumnFilter.forDate()
                                                                 )
                                                                 .build()
                                                 )

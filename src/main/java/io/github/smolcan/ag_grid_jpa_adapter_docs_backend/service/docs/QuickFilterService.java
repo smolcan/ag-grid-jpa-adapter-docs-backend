@@ -1,8 +1,11 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
@@ -16,51 +19,51 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuickFilterService {
-    
-    private final QueryBuilder<Trade> queryBuilder;
+
+    private final QueryBuilder<Trade, Void> queryBuilder;
 
     @Autowired
     public QuickFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(new AgNumberColumnFilter())
+                        ColDef.builder(Trade_.tradeId)
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("submitter.name")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.name))
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("dealType")
+                        ColDef.builder(Trade_.dealType)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("bidType")
+                        ColDef.builder(Trade_.bidType)
                                 .filter(new AgTextColumnFilter())
                                 .build()
                 )
-                
+
                 .isQuickFilterPresent(true)
-                .quickFilterSearchInFields("submitter.name", "product", "portfolio", "book", "dealType", "bidType")
+                .quickFilterSearchInFields(
+                        FieldPath.of(Trade_.submitter).to(Submitter_.name),
+                        FieldPath.of(Trade_.product),
+                        FieldPath.of(Trade_.portfolio),
+                        FieldPath.of(Trade_.book),
+                        FieldPath.of(Trade_.dealType),
+                        FieldPath.of(Trade_.bidType)
+                )
                 .quickFilterTextFormatter((cb, stringExpr) -> {
                     Expression<String> newExpression = stringExpr;
                     // Remove accents
@@ -70,13 +73,13 @@ public class QuickFilterService {
 
                     return newExpression;
                 })
-                
+
                 .build();
     }
-    
+
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);
     }
-    
+
 }

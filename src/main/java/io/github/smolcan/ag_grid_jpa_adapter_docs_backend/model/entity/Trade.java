@@ -20,9 +20,6 @@ public class Trade {
     @Column(name = "trade_id")
     private Long tradeId;
     
-//    @Column(name = "parent_trade_id")
-//    private Long parentTradeId;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_trade_id")
     private Trade parentTrade;
@@ -38,15 +35,11 @@ public class Trade {
 
     @Column(name = "book", length = 255)
     private String book;
-
-//    @Column(name = "submitter_id")
-//    private Integer submitterId;
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "submitter_id")
     private Submitter submitter;
 
-//    @Column(name = "submitter_deal_id")
-//    private Integer submitterDealId;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "submitter_deal_id")
     private SubmitterDeal submitterDeal;

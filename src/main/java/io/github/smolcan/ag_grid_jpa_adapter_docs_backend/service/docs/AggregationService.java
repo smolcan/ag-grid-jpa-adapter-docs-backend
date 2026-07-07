@@ -1,8 +1,11 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgDateColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
@@ -18,75 +21,63 @@ import java.math.BigDecimal;
 @Service
 public class AggregationService {
 
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> queryBuilderSuppressAggFilteredOnly;
-    private final QueryBuilder<Trade> queryBuilderGroupAggFiltering;
-    private final QueryBuilder<Trade> queryBuilderCustomAggregation;
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilderSuppressAggFilteredOnly;
+    private final QueryBuilder<Trade, Void> queryBuilderGroupAggFiltering;
+    private final QueryBuilder<Trade, Void> queryBuilderCustomAggregation;
 
     @Autowired
     public AggregationService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enableRowGroup(true)
                                 .build(),
                         // numbers
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("submitterDeal.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
                         // date
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .enableValue(true)
-                                .filter(new AgDateColumnFilter())
+                                .filter(AgDateColumnFilter.forLocalDate())
                                 .build()
                 )
                 .build();
 
         this.queryBuilderCustomAggregation = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enableRowGroup(true)
                                 .build(),
                         // numbers
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
                         // boolean
-                        ColDef.builder()
-                                .field("isSold")
+                        ColDef.builder(Trade_.isSold)
                                 .allowedAggFuncs("bool_and")
                                 .enableValue(true)
                                 .build()
@@ -98,34 +89,28 @@ public class AggregationService {
 
         this.queryBuilderSuppressAggFilteredOnly = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enableRowGroup(true)
                                 .build(),
                         // numbers
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("submitterDeal.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
                         // date
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .enableValue(true)
-                                .filter(new AgDateColumnFilter())
+                                .filter(AgDateColumnFilter.forLocalDate())
                                 .build()
                 )
                 .suppressAggFilteredOnly(true)
@@ -133,34 +118,28 @@ public class AggregationService {
 
         this.queryBuilderGroupAggFiltering = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enableRowGroup(true)
                                 .build(),
                         // numbers
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
                         // date
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .enableValue(true)
-                                .filter(new AgDateColumnFilter())
+                                .filter(AgDateColumnFilter.forLocalDate())
                                 .build()
                 )
                 .groupAggFiltering(true)

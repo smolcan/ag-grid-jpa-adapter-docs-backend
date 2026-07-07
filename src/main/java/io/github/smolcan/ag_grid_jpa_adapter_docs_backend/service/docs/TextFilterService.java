@@ -1,6 +1,7 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.TextFilterParams;
@@ -17,23 +18,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TextFilterService {
 
-    private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilder;
 
     @Autowired
     public TextFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
                         
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
                         
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .filter(
                                         new AgTextColumnFilter()
                                                 .filterParams(
@@ -44,8 +42,7 @@ public class TextFilterService {
                                 )
                                 .build(),
                         
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .filter(
                                         new AgTextColumnFilter()
                                                 .filterParams(
@@ -56,8 +53,7 @@ public class TextFilterService {
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("dealType")
+                        ColDef.builder(Trade_.dealType)
                                 .filter(
                                         new AgTextColumnFilter()
                                                 .filterParams(
@@ -78,15 +74,12 @@ public class TextFilterService {
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("bidType")
+                        ColDef.builder(Trade_.bidType)
                                 .filter(
                                         new AgTextColumnFilter()
                                                 .filterParams(
                                                         TextFilterParams.builder()
-                                                                .textMatcher((cb, textMatcherParams) -> {
-                                                                    return cb.equal(textMatcherParams.getFilterText(), "bid");
-                                                                })
+                                                                .textMatcher((cb, textMatcherParams) -> cb.equal(textMatcherParams.getFilterText(), "bid"))
                                                                 .build()
                                                 )
                                 )

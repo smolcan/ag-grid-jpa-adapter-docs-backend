@@ -1,8 +1,10 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgDateColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnFilter;
@@ -18,43 +20,38 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PaginationService {
 
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> paginateChildRowsQueryBuilder;
-    
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> paginateChildRowsQueryBuilder;
+
     @Autowired
     public PaginationService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<>()
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<>()
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("portfolio")
-                                .enableRowGroup(true)
-                                .filter(new AgTextColumnFilter())
-                                .build(),
-                        
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.book)
+                                .enableRowGroup(true)
+                                .filter(new AgTextColumnFilter())
+                                .build(),
+
+                        ColDef.builder(Trade_.birthDate)
                                 .filter(
-                                        new AgDateColumnFilter()
+                                        AgDateColumnFilter.forLocalDate()
                                 )
                                 .build()
                 )
@@ -62,36 +59,31 @@ public class PaginationService {
 
         this.paginateChildRowsQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<>()
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<>()
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .filter(
-                                        new AgDateColumnFilter()
+                                        AgDateColumnFilter.forLocalDate()
                                 )
                                 .build()
                 )
