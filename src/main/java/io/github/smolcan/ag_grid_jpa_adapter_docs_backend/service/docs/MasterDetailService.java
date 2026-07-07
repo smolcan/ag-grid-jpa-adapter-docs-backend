@@ -1,12 +1,14 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
-import io.github.smolcan.aggrid.jpa.adapter.utils.Utils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Path;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,53 +22,46 @@ import java.util.Optional;
 @Service
 public class MasterDetailService {
 
-    private final QueryBuilder<Submitter> basicQueryBuilder;
-    private final QueryBuilder<Submitter> eagerQueryBuilder;
-    private final QueryBuilder<Trade> customDetailConditionQueryBuilder;
-    private final QueryBuilder<Submitter> dynamicDetailQueryBuilder;
-    private final QueryBuilder<Trade> treeDataMasterDetailQueryBuilder;
+    private final QueryBuilder<Submitter, Trade> basicQueryBuilder;
+    private final QueryBuilder<Submitter, Trade> eagerQueryBuilder;
+    private final QueryBuilder<Trade, Trade> customDetailConditionQueryBuilder;
+    private final QueryBuilder<Submitter, Trade> dynamicDetailQueryBuilder;
+    private final QueryBuilder<Trade, Trade> treeDataMasterDetailQueryBuilder;
 
     @Autowired
     public MasterDetailService(EntityManager entityManager) {
 
-        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, entityManager)
+        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("id")
+                        ColDef.builder(Submitter_.id)
                                 .build(),
-                        ColDef.builder()
-                                .field("name")
+                        ColDef.builder(Submitter_.name)
                                 .build()
                 )
-                
+
                 .masterDetail(true)
                 .primaryFieldName("id")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.builder()
+                        QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
-                                        ColDef.builder()
-                                                .field("tradeId")
+                                        ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("product")
+                                        ColDef.builder(Trade_.product)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("portfolio")
+                                        ColDef.builder(Trade_.portfolio)
                                                 .build()
                                 )
-                                .detailMasterReferenceField("submitter")
+                                .detailMasterReferenceField(Trade_.submitter)
                                 .build()
                 )
                 .build();
 
-        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, entityManager)
+        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("id")
+                        ColDef.builder(Submitter_.id)
                                 .build(),
-                        ColDef.builder()
-                                .field("name")
+                        ColDef.builder(Submitter_.name)
                                 .build()
                 )
 
@@ -75,62 +70,54 @@ public class MasterDetailService {
                 .masterDetailRowDataFieldName("detailRows")
                 .primaryFieldName("id")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.builder()
+                        QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
-                                        ColDef.builder()
-                                                .field("tradeId")
+                                        ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("product")
+                                        ColDef.builder(Trade_.product)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("portfolio")
+                                        ColDef.builder(Trade_.portfolio)
                                                 .build()
                                 )
-                                .detailMasterReferenceField("submitter")
+                                .detailMasterReferenceField(Trade_.submitter)
                                 .build()
                 )
                 .build();
-        
-        this.customDetailConditionQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+
+        this.customDetailConditionQueryBuilder = QueryBuilder.builder(Trade.class, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("id")
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .build(),
-                        ColDef.builder()
-                                .field("submitter.name")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.name))
                                 .build()
                 )
 
                 .masterDetail(true)
-                .primaryFieldName("id")
+                .primaryFieldName("tradeId")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.builder()
+                        QueryBuilder.MasterDetailParams.<Trade, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
-                                        ColDef.builder()
-                                                .field("id")
+                                        ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("submitter.id")
+                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("submitter.name")
+                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.name))
                                                 .build()
                                 )
                                 .createMasterRowPredicate((cb, detailRoot, masterRow) -> {
                                     // detail will have all the trades that have the same submitter
+                                    @SuppressWarnings("unchecked")
                                     var submitterObj = (Map<String, Object>) masterRow.get("submitter");
                                     if (submitterObj == null || submitterObj.isEmpty()) {
                                         return cb.or();
                                     }
 
                                     Long submitterId = Optional.ofNullable(submitterObj.get("id")).map(String::valueOf).map(Long::parseLong).orElse(null);
-                                    Path<?> path = Utils.getPath(detailRoot, "submitter.id");
+                                    Path<?> path = detailRoot.get("submitter").get("id");
                                     if (submitterId == null) {
                                         return cb.isNull(path);
                                     } else {
@@ -141,15 +128,13 @@ public class MasterDetailService {
                 )
 
                 .build();
-        
-        
-        this.dynamicDetailQueryBuilder = QueryBuilder.builder(Submitter.class, entityManager)
+
+
+        this.dynamicDetailQueryBuilder = QueryBuilder.builder(Submitter.class, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("id")
+                        ColDef.builder(Submitter_.id)
                                 .build(),
-                        ColDef.builder()
-                                .field("name")
+                        ColDef.builder(Submitter_.name)
                                 .build()
                 )
 
@@ -158,87 +143,76 @@ public class MasterDetailService {
                 .dynamicMasterDetailParams((masterRow) -> {
                     long submitterId = Long.parseLong(String.valueOf(masterRow.get("id")));
                     if (submitterId % 2 == 0) {
-                        return QueryBuilder.MasterDetailParams.builder()
+                        return QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
-                                        ColDef.builder()
-                                                .field("tradeId")
+                                        ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("product")
+                                        ColDef.builder(Trade_.product)
                                                 .build()
                                 )
-                                .detailMasterReferenceField("submitter")
+                                .detailMasterReferenceField(Trade_.submitter)
                                 .build();
                     } else {
-                        return QueryBuilder.MasterDetailParams.builder()
+                        return QueryBuilder.MasterDetailParams.<Submitter, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
-                                        ColDef.builder()
-                                                .field("tradeId")
+                                        ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("portfolio")
+                                        ColDef.builder(Trade_.portfolio)
                                                 .build()
                                 )
-                                .detailMasterReferenceField("submitter")
+                                .detailMasterReferenceField(Trade_.submitter)
                                 .build();
                     }
                 })
                 .build();
-        
-        this.treeDataMasterDetailQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
+
+        this.treeDataMasterDetailQueryBuilder = QueryBuilder.builder(Trade.class, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .build(),
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .build()
                 )
-                
+
                 // tree data config
                 .treeData(true)
                 .primaryFieldName("tradeId")
                 .isServerSideGroupFieldName("hasChildren")
                 .treeDataParentReferenceField("parentTrade")
                 .treeDataChildrenField("childTrades")
-                
+
                 // master/detail config
                 .masterDetail(true)
                 .primaryFieldName("tradeId")
                 .masterDetailParams(
-                        QueryBuilder.MasterDetailParams.builder()
+                        QueryBuilder.MasterDetailParams.<Trade, Trade>builder()
                                 .detailClass(Trade.class)
                                 .detailColDefs(
-                                        ColDef.builder()
-                                                .field("tradeId")
+                                        ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("product")
+                                        ColDef.builder(Trade_.product)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("portfolio")
+                                        ColDef.builder(Trade_.portfolio)
                                                 .build(),
-                                        ColDef.builder()
-                                                .field("submitter.id")
+                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                                 .build()
                                 )
                                 .createMasterRowPredicate((cb, detailRoot, masterRow) -> {
                                     // detail will have all the trades that have the same submitter
+                                    @SuppressWarnings("unchecked")
                                     var submitterObj = (Map<String, Object>) masterRow.get("submitter");
                                     if (submitterObj == null || submitterObj.isEmpty()) {
                                         return cb.or();
                                     }
-                                    
+
                                     Long submitterId = Optional.ofNullable(submitterObj.get("id")).map(String::valueOf).map(Long::parseLong).orElse(null);
-                                    Path<?> path = Utils.getPath(detailRoot, "submitter.id");
+                                    Path<?> path = detailRoot.get("submitter").get("id");
                                     if (submitterId == null) {
                                         return cb.isNull(path);
                                     } else {
@@ -247,7 +221,7 @@ public class MasterDetailService {
                                 })
                                 .build()
                 )
-                
+
                 .build();
     }
 
@@ -276,12 +250,12 @@ public class MasterDetailService {
     public List<Map<String, Object>> getCustomDetailConditionDetailRows(Map<String, Object> request) {
         return this.customDetailConditionQueryBuilder.getDetailRowData(request);
     }
-    
+
     @Transactional(readOnly = true)
     public LoadSuccessParams getDynamicRows(ServerSideGetRowsRequest request) {
         return this.dynamicDetailQueryBuilder.getRows(request);
     }
-    
+
 
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getDynamicDetailRowData(Map<String, Object> masterRow) {

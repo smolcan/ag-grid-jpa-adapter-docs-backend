@@ -1,8 +1,8 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -15,30 +15,24 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class SortingService {
-    
-    private final QueryBuilder<Trade> sortingQueryBuilder;
-    private final QueryBuilder<Trade> sortingAbsoluteQueryBuilder;
+
+    private final QueryBuilder<Trade, Void> sortingQueryBuilder;
+    private final QueryBuilder<Trade, Void> sortingAbsoluteQueryBuilder;
 
     @Autowired
     public SortingService(EntityManager entityManager) {
         this.sortingQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
                         // enabled sorting
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
                                 .sortable(true)
                                 .build(),
                         // disabled sorting
-                        ColDef.builder()
-                                .field("product")
-                                .filter(false)
+                        ColDef.builder(Trade_.product)
                                 .sortable(false)
                                 .build(),
                         // disabled sorting - throws
-                        ColDef.builder()
-                                .field("portfolio")
-                                .filter(false)
+                        ColDef.builder(Trade_.portfolio)
                                 .sortable(false)
                                 .build()
                         )
@@ -47,19 +41,13 @@ public class SortingService {
         this.sortingAbsoluteQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
                         // enabled sorting
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
                         // disabled sorting
-                        ColDef.builder()
-                                .field("pl1")
-                                .filter(false)
+                        ColDef.builder(Trade_.pl1)
                                 .build(),
                         // disabled sorting - throws
-                        ColDef.builder()
-                                .field("pl2")
-                                .filter(false)
+                        ColDef.builder(Trade_.pl2)
                                 .build()
                 )
                 .build();
@@ -75,5 +63,5 @@ public class SortingService {
     public LoadSuccessParams getAbsoluteRows(ServerSideGetRowsRequest request) {
         return this.sortingAbsoluteQueryBuilder.getRows(request);
     }
-    
+
 }

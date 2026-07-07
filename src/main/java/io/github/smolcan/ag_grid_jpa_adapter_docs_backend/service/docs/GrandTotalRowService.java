@@ -1,6 +1,7 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.AgSetColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
@@ -18,35 +19,31 @@ import java.util.Map;
 
 @Service
 public class GrandTotalRowService {
-    
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> queryBuilderAsync;
-    
+
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilderAsync;
+
     @Autowired
     public GrandTotalRowService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        
-                        ColDef.builder()
-                                .field("product")
+
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .filter(new AgTextColumnFilter())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("book")
-                                .filter(new AgSetColumnFilter())
+                        ColDef.builder(Trade_.book)
+                                .filter(AgSetColumnFilter.forString())
                                 .build(),
-                        
-                        ColDef.builder()
-                                .field("currentValue")
+
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build()
                         )
                 .grandTotalRow(true)
@@ -54,31 +51,26 @@ public class GrandTotalRowService {
 
         this.queryBuilderAsync = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
 
-                        ColDef.builder()
-                                .field("book")
-                                .filter(new AgSetColumnFilter())
+                        ColDef.builder(Trade_.book)
+                                .filter(AgSetColumnFilter.forString())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build()
                 )
                 .grandTotalRow(true)
                 .build();
     }
-    
+
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);

@@ -2,9 +2,12 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilter;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilterParams;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.MultiFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.SetFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.TextFilterParams;
@@ -18,42 +21,41 @@ import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Expression;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 @Service
+@Slf4j
 public class TradeService {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final Logger LOGGER = Logger.getLogger(TradeService.class.getName());
-    
+
     private final EntityManager entityManager;
-    private final QueryBuilder<Trade> queryBuilder;
-    
+    private final QueryBuilder<Trade, Void> queryBuilder;
+
     @Autowired
     public TradeService(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
                         // trade id
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgMultiColumnFilter()
-                                        
+                                .filter(new AgMultiColumnFilter<Long>()
                                         .filterParams(
-                                                MultiFilterParams.builder()
+                                                MultiFilterParams.<Long>builder()
                                                         .filters(
-                                                                new AgNumberColumnFilter(),
-                                                                new CustomNumberFilter()
+                                                                new AgNumberColumnFilter<>(),
+                                                                new CustomNumberFilter<Long>()
                                                                         .filterParams(
                                                                                 CustomNumberFilterParams
                                                                                         .builder()
@@ -65,25 +67,22 @@ public class TradeService {
                                         )
                                 )
                                 .build(),
-                        
+
                         // product
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgMultiColumnFilter()
+                                .filter(new AgMultiColumnFilter<String>()
                                         .filterParams(
-                                                MultiFilterParams.builder()
+                                                MultiFilterParams.<String>builder()
                                                         .filters(
                                                                 new AgTextColumnFilter(),
-                                                                new AgSetColumnFilter()
+                                                                AgSetColumnFilter.forString()
                                                                         .filterParams(
                                                                                 SetFilterParams
                                                                                         .builder()
-                                                                                        .textFormatter((cb, expr) -> {
-                                                                                            return cb.trim(cb.lower(expr));
-                                                                                        })
+                                                                                        .textFormatter((cb, expr) -> cb.trim(cb.lower(expr)))
                                                                                         .build()
                                                                         )
                                                         )
@@ -91,37 +90,34 @@ public class TradeService {
                                         )
                                 )
                                 .build(),
-                        
+
                         // birthDate
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgMultiColumnFilter()
+                                .filter(new AgMultiColumnFilter<LocalDate>()
                                         .filterParams(
-                                                MultiFilterParams.builder()
+                                                MultiFilterParams.<LocalDate>builder()
                                                         .filters(
-                                                                new AgDateColumnFilter(),
-                                                                new AgSetColumnFilter()
+                                                                AgDateColumnFilter.forLocalDate(),
+                                                                AgSetColumnFilter.forDate()
                                                         )
                                                         .build()
                                         )
                                 )
                                 .build(),
-                        
+
                         // isSold
-                        ColDef.builder()
-                                .field("isSold")
+                        ColDef.builder(Trade_.isSold)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgSetColumnFilter())
+                                .filter(AgSetColumnFilter.forBoolean())
                                 .build(),
 
                         // Portfolio with text filter
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -137,7 +133,7 @@ public class TradeService {
                                                                     newExpression = cb.function("TRANSLATE", String.class, newExpression,
                                                                             cb.literal("áéíóúÁÉÍÓÚüÜñÑ"),
                                                                             cb.literal("aeiouAEIOUuUnN"));
-                                                                    
+
                                                                     return newExpression;
                                                                 })
                                                                 .build()
@@ -146,8 +142,7 @@ public class TradeService {
                                 .build(),
 
                         // Book with text filter
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -155,17 +150,16 @@ public class TradeService {
                                 .build(),
 
                         // Submitter ID with multi-column filter
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgMultiColumnFilter()
+                                .filter(new AgMultiColumnFilter<Long>()
                                         .filterParams(
-                                                MultiFilterParams.builder()
+                                                MultiFilterParams.<Long>builder()
                                                         .filters(
-                                                                new AgNumberColumnFilter(),
-                                                                new AgSetColumnFilter()
+                                                                new AgNumberColumnFilter<>(),
+                                                                AgSetColumnFilter.forNumber()
                                                         )
                                                         .build()
                                         )
@@ -173,17 +167,15 @@ public class TradeService {
                                 .build(),
 
                         // Submitter Deal ID with number filter
-                        ColDef.builder()
-                                .field("submitterDeal.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // Deal Type with text filter
-                        ColDef.builder()
-                                .field("dealType")
+                        ColDef.builder(Trade_.dealType)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -191,8 +183,7 @@ public class TradeService {
                                 .build(),
 
                         // Bid Type with text filter
-                        ColDef.builder()
-                                .field("bidType")
+                        ColDef.builder(Trade_.bidType)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
@@ -200,79 +191,70 @@ public class TradeService {
                                 .build(),
 
                         // Current Value with number filter
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // Previous Value with number filter
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // PL1 with number filter
-                        ColDef.builder()
-                                .field("pl1")
+                        ColDef.builder(Trade_.pl1)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // PL2 with number filter
-                        ColDef.builder()
-                                .field("pl2")
+                        ColDef.builder(Trade_.pl2)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // Gain Dx with number filter
-                        ColDef.builder()
-                                .field("gainDx")
+                        ColDef.builder(Trade_.gainDx)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // SX Px with number filter
-                        ColDef.builder()
-                                .field("sxPx")
+                        ColDef.builder(Trade_.sxPx)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // X99 Out with number filter
-                        ColDef.builder()
-                                .field("x99Out")
+                        ColDef.builder(Trade_.x99Out)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
                         // Batch with number filter
-                        ColDef.builder()
-                                .field("batch")
+                        ColDef.builder(Trade_.batch)
                                 .enableValue(true)
                                 .enableRowGroup(true)
                                 .enablePivot(true)
-                                .filter(new AgNumberColumnFilter())
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
 
-                        ColDef.builder()
-                                .field("dataPath")
+                        ColDef.builder(Trade_.dataPath)
                                 .build()
 
                         )
@@ -280,7 +262,7 @@ public class TradeService {
                 .paginateChildRows(true)
                 .build();
     }
-    
+
     public List<Trade> getRowsForClientSideModel() {
         return this.entityManager.createQuery("SELECT t FROM Trade t", Trade.class)
                 .setMaxResults(50000)
@@ -289,17 +271,17 @@ public class TradeService {
 
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
-        LOGGER.info("getRows called, received request: ");
-        LOGGER.info(OBJECT_MAPPER.writeValueAsString(request));
-        LOGGER.info("executing...: ");
+        log.info("getRows called, received request: ");
+        log.info(OBJECT_MAPPER.writeValueAsString(request));
+        log.info("executing...: ");
         return this.queryBuilder.getRows(request);
     }
 
     @Transactional(readOnly = true)
     public long countRows(ServerSideGetRowsRequest request) {
-        LOGGER.info("countRows called, received request: ");
-        LOGGER.info(OBJECT_MAPPER.writeValueAsString(request));
-        LOGGER.info("executing...: ");
+        log.info("countRows called, received request: ");
+        log.info(OBJECT_MAPPER.writeValueAsString(request));
+        log.info("executing...: ");
         return this.queryBuilder.countRows(request);
     }
 }

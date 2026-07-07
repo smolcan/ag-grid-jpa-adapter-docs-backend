@@ -2,6 +2,7 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.DateFilterParams;
@@ -21,22 +22,19 @@ import static io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.SimpleFil
 @Service
 public class DateFilterService {
 
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> relativeDateQueryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> relativeDateQueryBuilder;
 
     @Autowired
     public DateFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
                         
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .filter(
-                                        new AgDateColumnFilter()
+                                        AgDateColumnFilter.forLocalDate()
                                                 .filterParams(
                                                         DateFilterParams.builder()
                                                                 .inRangeInclusive(true)
@@ -56,14 +54,11 @@ public class DateFilterService {
 
         this.relativeDateQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
                                 .filter(
-                                        new AgDateColumnFilter()
+                                        AgDateColumnFilter.forLocalDate()
                                                 .filterParams(
                                                         DateFilterParams.builder()
                                                                 .filterOptions(

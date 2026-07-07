@@ -3,9 +3,12 @@ package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilter;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto.CustomNumberFilterParams;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -18,23 +21,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CustomFilterService {
 
-    private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilder;
 
     @Autowired
     public CustomFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .filter(
-                                        new CustomNumberFilter()
+                                        new CustomNumberFilter<>()
                                 )
                                 .build(),
-                        
-                        ColDef.builder()
-                                .field("submitterDeal.id")
+
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
                                 .filter(
-                                        new CustomNumberFilter()
+                                        new CustomNumberFilter<Long>()
                                                 .filterParams(
                                                         CustomNumberFilterParams.builder()
                                                                 .includeNullValues(true)

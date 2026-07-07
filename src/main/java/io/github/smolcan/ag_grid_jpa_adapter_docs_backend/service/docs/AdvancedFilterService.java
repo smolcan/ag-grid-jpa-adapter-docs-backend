@@ -1,8 +1,16 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
+import io.github.smolcan.aggrid.jpa.adapter.filter.provided.AgSetColumnFilter;
+import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgDateColumnFilter;
+import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
+import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgTextColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -14,40 +22,39 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AdvancedFilterService {
 
-    private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilder;
 
     @Autowired
     public AdvancedFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
-                                .filter(false)
+                        ColDef.builder(Trade_.tradeId)
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
                         // strings
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
+                                .filter(new AgTextColumnFilter())
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
+                                .filter(new AgTextColumnFilter())
                                 .build(),
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
+                                .filter(new AgTextColumnFilter())
                                 .build(),
                         // numbers
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder()
-                                .field("submitterDeal.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
+                                .filter(new AgNumberColumnFilter<>())
                                 .build(),
                         // date
-                        ColDef.builder()
-                                .field("birthDate")
+                        ColDef.builder(Trade_.birthDate)
+                                .filter(AgDateColumnFilter.forLocalDate())
                                 .build(),
                         // boolean
-                        ColDef.builder()
-                                .field("isSold")
+                        ColDef.builder(Trade_.isSold)
+                                .filter(AgSetColumnFilter.forBoolean())
                                 .build()
                 )
                 .enableAdvancedFilter(true)

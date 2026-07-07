@@ -1,8 +1,12 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 
+import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.filter.model.simple.params.NumberFilterParams;
 import io.github.smolcan.aggrid.jpa.adapter.filter.provided.simple.AgNumberColumnFilter;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
@@ -13,27 +17,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 public class NumberFilterService {
 
-    private final QueryBuilder<Trade> queryBuilder;
+    private final QueryBuilder<Trade, Void> queryBuilder;
 
 
     @Autowired
     public NumberFilterService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("tradeId")
+                        ColDef.builder(Trade_.tradeId)
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<>()
                                 )
                                 .build(),
                         
-                        ColDef.builder()
-                                .field("submitter.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<Long>()
                                                 .filterParams(NumberFilterParams
                                                         .builder()
                                                         .inRangeInclusive(true)
@@ -42,10 +46,9 @@ public class NumberFilterService {
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("submitterDeal.id")
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<Long>()
                                                 .filterParams(NumberFilterParams
                                                         .builder()
                                                         .includeBlanksInEquals(true)
@@ -55,10 +58,9 @@ public class NumberFilterService {
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<BigDecimal>()
                                                 .filterParams(NumberFilterParams
                                                         .builder()
                                                         .includeBlanksInLessThan(true)
@@ -68,10 +70,9 @@ public class NumberFilterService {
                                 )
                                 .build(),
 
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .filter(
-                                        new AgNumberColumnFilter()
+                                        new AgNumberColumnFilter<BigDecimal>()
                                                 .filterParams(NumberFilterParams
                                                         .builder()
                                                         .includeBlanksInRange(true)

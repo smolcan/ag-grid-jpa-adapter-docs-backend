@@ -1,6 +1,5 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.dto;
 
-import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

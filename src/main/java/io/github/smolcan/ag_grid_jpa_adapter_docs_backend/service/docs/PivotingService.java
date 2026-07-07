@@ -1,8 +1,8 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
-import io.github.smolcan.aggrid.jpa.adapter.exceptions.OnPivotMaxColumnsExceededException;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
 import io.github.smolcan.aggrid.jpa.adapter.request.ServerSideGetRowsRequest;
 import io.github.smolcan.aggrid.jpa.adapter.response.LoadSuccessParams;
@@ -14,34 +14,29 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PivotingService {
 
-    private final QueryBuilder<Trade> queryBuilder;
-    private final QueryBuilder<Trade> limitQueryBuilder;
-    
+    private final QueryBuilder<Trade, Void> queryBuilder;
+    private final QueryBuilder<Trade, Void> limitQueryBuilder;
+
     @Autowired
     public PivotingService(EntityManager entityManager) {
         this.queryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .build(),
-                        
-                        
-                        ColDef.builder()
-                                .field("book")
+
+
+                        ColDef.builder(Trade_.book)
                                 .enablePivot(true)
                                 .build(),
-                        
-                        ColDef.builder()
-                                .field("currentValue")
+
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
                                 .build()
                 )
@@ -49,31 +44,25 @@ public class PivotingService {
 
         this.limitQueryBuilder = QueryBuilder.builder(Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder()
-                                .field("product")
+                        ColDef.builder(Trade_.product)
                                 .enableRowGroup(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("portfolio")
+                        ColDef.builder(Trade_.portfolio)
                                 .enableRowGroup(true)
                                 .build(),
 
 
-                        ColDef.builder()
-                                .field("book")
+                        ColDef.builder(Trade_.book)
                                 .enablePivot(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("bidType")
+                        ColDef.builder(Trade_.bidType)
                                 .enablePivot(true)
                                 .build(),
 
-                        ColDef.builder()
-                                .field("currentValue")
+                        ColDef.builder(Trade_.currentValue)
                                 .enableValue(true)
                                 .build(),
-                        ColDef.builder()
-                                .field("previousValue")
+                        ColDef.builder(Trade_.previousValue)
                                 .enableValue(true)
                                 .build()
                 )
@@ -91,7 +80,7 @@ public class PivotingService {
     public LoadSuccessParams getRowsLimitColGen(ServerSideGetRowsRequest request) {
         return this.limitQueryBuilder.getRows(request);
     }
-    
-    
-    
+
+
+
 }
