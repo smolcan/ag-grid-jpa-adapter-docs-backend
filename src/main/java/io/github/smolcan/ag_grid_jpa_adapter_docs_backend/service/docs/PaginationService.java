@@ -22,6 +22,7 @@ public class PaginationService {
 
     private final QueryBuilder<Trade, Long, Void> queryBuilder;
     private final QueryBuilder<Trade, Long, Void> paginateChildRowsQueryBuilder;
+    private final QueryBuilder<Trade, Long, Void> rowCountInResponseQueryBuilder;
 
     @Autowired
     public PaginationService(EntityManager entityManager) {
@@ -89,6 +90,39 @@ public class PaginationService {
                 )
                 .paginateChildRows(true)
                 .build();
+
+        this.rowCountInResponseQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
+                .colDefs(
+                        ColDef.builder(Trade_.tradeId)
+                                .filter(
+                                        new AgNumberColumnFilter<>()
+                                )
+                                .build(),
+
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                                .filter(
+                                        new AgNumberColumnFilter<>()
+                                )
+                                .build(),
+
+                        ColDef.builder(Trade_.portfolio)
+                                .enableRowGroup(true, key -> key)
+                                .filter(new AgTextColumnFilter())
+                                .build(),
+
+                        ColDef.builder(Trade_.book)
+                                .enableRowGroup(true, key -> key)
+                                .filter(new AgTextColumnFilter())
+                                .build(),
+
+                        ColDef.builder(Trade_.birthDate)
+                                .filter(
+                                        AgDateColumnFilter.forLocalDate()
+                                )
+                                .build()
+                )
+                .includeRowCountInLoadSuccessParams(true)
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -109,5 +143,10 @@ public class PaginationService {
     @Transactional(readOnly = true)
     public long paginateChildRowsCountRows(ServerSideGetRowsRequest request) {
         return this.paginateChildRowsQueryBuilder.countRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams rowCountInResponseGetRows(ServerSideGetRowsRequest request) {
+        return this.rowCountInResponseQueryBuilder.getRows(request);
     }
 }

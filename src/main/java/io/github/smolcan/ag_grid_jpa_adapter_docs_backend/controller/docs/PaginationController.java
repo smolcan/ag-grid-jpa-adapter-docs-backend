@@ -35,6 +35,12 @@ public class PaginationController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("row-count-in-response/getRows")
+    public ResponseEntity<LoadSuccessParams> rowCountInResponseGetRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.paginationService.rowCountInResponseGetRows(request);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("paginate-child-rows/countRows")
     public ResponseEntity<Long> paginateChildRowsCountRows(@RequestBody ServerSideGetRowsRequest request) {
         long result = this.paginationService.paginateChildRowsCountRows(request);
