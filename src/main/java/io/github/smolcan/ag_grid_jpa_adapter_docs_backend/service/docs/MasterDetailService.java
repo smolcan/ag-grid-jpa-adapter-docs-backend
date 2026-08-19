@@ -27,6 +27,7 @@ public class MasterDetailService {
     private final QueryBuilder<Trade, Long, Trade> customDetailConditionQueryBuilder;
     private final QueryBuilder<Submitter, Long, Trade> dynamicDetailQueryBuilder;
     private final QueryBuilder<Trade, Long, Trade> treeDataMasterDetailQueryBuilder;
+    private final QueryBuilder<Submitter, Long, Trade> alwaysAppliedDetailPredicateQueryBuilder;
 
     @Autowired
     public MasterDetailService(EntityManager entityManager) {
@@ -79,6 +80,33 @@ public class MasterDetailService {
                                                 .build()
                                 )
                                 .detailMasterReferenceField(Trade_.submitter)
+                                .build()
+                )
+                .build();
+
+        this.alwaysAppliedDetailPredicateQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
+                .colDefs(
+                        ColDef.builder(Submitter_.id)
+                                .build(),
+                        ColDef.builder(Submitter_.name)
+                                .build()
+                )
+
+                .masterDetail(true)
+                .masterDetailParams(
+                        QueryBuilder.MasterDetailParams.<Submitter, Long, Trade>builder()
+                                .detailClass(Trade.class)
+                                .detailColDefs(
+                                        ColDef.builder(Trade_.tradeId)
+                                                .build(),
+                                        ColDef.builder(Trade_.product)
+                                                .build(),
+                                        ColDef.builder(Trade_.isSold)
+                                                .build()
+                                )
+                                .detailMasterReferenceField(Trade_.submitter)
+                                // detail rows can never contain an unsold trade
+                                .alwaysAppliedDetailPredicate((cb, detailRoot) -> cb.isTrue(detailRoot.get(Trade_.isSold)))
                                 .build()
                 )
                 .build();
@@ -229,6 +257,16 @@ public class MasterDetailService {
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getDetailRowData(Map<String, Object> masterRow) {
         return this.basicQueryBuilder.getDetailRowData(masterRow);
+    }
+
+    @Transactional(readOnly = true)
+    public LoadSuccessParams getAlwaysAppliedDetailPredicateRows(ServerSideGetRowsRequest request) {
+        return this.alwaysAppliedDetailPredicateQueryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getAlwaysAppliedDetailPredicateDetailRowData(Map<String, Object> masterRow) {
+        return this.alwaysAppliedDetailPredicateQueryBuilder.getDetailRowData(masterRow);
     }
 
     @Transactional(readOnly = true)

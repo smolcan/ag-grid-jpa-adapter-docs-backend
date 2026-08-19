@@ -33,6 +33,18 @@ public class MasterDetailController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("always-applied-detail-predicate/getRows")
+    public ResponseEntity<LoadSuccessParams> getAlwaysAppliedDetailPredicateRows(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.masterDetailService.getAlwaysAppliedDetailPredicateRows(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("always-applied-detail-predicate/getDetailRowData")
+    public ResponseEntity<List<Map<String, Object>>> getAlwaysAppliedDetailPredicateDetailRowData(@RequestBody Map<String, Object> masterRow) {
+        List<Map<String, Object>> result = this.masterDetailService.getAlwaysAppliedDetailPredicateDetailRowData(masterRow);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("eager/getRows")
     public ResponseEntity<LoadSuccessParams> getEagerRows(@RequestBody ServerSideGetRowsRequest request) {
         LoadSuccessParams result = this.masterDetailService.getEagerRows(request);
