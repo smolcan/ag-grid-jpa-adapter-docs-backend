@@ -28,5 +28,11 @@ public class PivotingController {
         LoadSuccessParams result = this.pivotingService.getRowsLimitColGen(request);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("filtering/getRows")
+    public ResponseEntity<LoadSuccessParams> getRowsFiltering(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.pivotingService.getRowsFiltering(request);
+        return ResponseEntity.ok(result);
+    }
     
 }
