@@ -13,12 +13,7 @@ import java.util.Set;
 @Table(name = "submitter")
 @Getter
 @Setter
-public class Submitter {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // For auto-increment behavior
-    @Column(name = "id")
-    private Long id;
+public class Submitter extends AbstractEntity {
     
     @Column(name = "name")
     private String name;
@@ -28,11 +23,11 @@ public class Submitter {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Submitter submitter && Objects.equals(this.id, submitter.id);
+        return obj instanceof Submitter submitter && Objects.equals(this.getId(), submitter.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.id);
+        return Objects.hashCode(this.getId());
     }
 }

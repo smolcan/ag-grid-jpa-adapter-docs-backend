@@ -149,7 +149,7 @@ public class TradeService {
                                 .build(),
 
                         // Submitter ID with multi-column filter
-                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
                                 .enableValue(true)
                                 .enableRowGroup(true, Long::valueOf)
                                 .enablePivot(true)
@@ -166,7 +166,7 @@ public class TradeService {
                                 .build(),
 
                         // Submitter Deal ID with number filter
-                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(AbstractEntity_.id))
                                 .enableValue(true)
                                 .enableRowGroup(true, Long::valueOf)
                                 .enablePivot(true)

@@ -1,8 +1,7 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
 
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.SubmitterDeal_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.AbstractEntity_;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
 import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
@@ -30,10 +29,10 @@ public class ExternalFilterService {
                         ColDef.builder(Trade_.tradeId)
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
                                 .filter(new AgNumberColumnFilter<>())
                                 .build(),
-                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(SubmitterDeal_.id))
+                        ColDef.builder(FieldPath.of(Trade_.submitterDeal).to(AbstractEntity_.id))
                                 .filter(new AgNumberColumnFilter<>())
                                 .build()
                 )

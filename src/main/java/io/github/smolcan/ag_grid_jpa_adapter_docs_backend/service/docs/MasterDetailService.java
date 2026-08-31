@@ -1,9 +1,6 @@
 package io.github.smolcan.ag_grid_jpa_adapter_docs_backend.service.docs;
 
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Submitter_;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade;
-import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.Trade_;
+import io.github.smolcan.ag_grid_jpa_adapter_docs_backend.model.entity.*;
 import io.github.smolcan.aggrid.jpa.adapter.column.ColDef;
 import io.github.smolcan.aggrid.jpa.adapter.column.FieldPath;
 import io.github.smolcan.aggrid.jpa.adapter.query.QueryBuilder;
@@ -32,9 +29,9 @@ public class MasterDetailService {
     @Autowired
     public MasterDetailService(EntityManager entityManager) {
 
-        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
+        this.basicQueryBuilder = QueryBuilder.builder(Submitter.class, AbstractEntity_.id, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder(Submitter_.id)
+                        ColDef.builder(AbstractEntity_.id)
                                 .build(),
                         ColDef.builder(Submitter_.name)
                                 .build()
@@ -57,9 +54,9 @@ public class MasterDetailService {
                 )
                 .build();
 
-        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
+        this.eagerQueryBuilder = QueryBuilder.builder(Submitter.class, AbstractEntity_.id, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder(Submitter_.id)
+                        ColDef.builder(AbstractEntity_.id)
                                 .build(),
                         ColDef.builder(Submitter_.name)
                                 .build()
@@ -84,9 +81,9 @@ public class MasterDetailService {
                 )
                 .build();
 
-        this.alwaysAppliedDetailPredicateQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
+        this.alwaysAppliedDetailPredicateQueryBuilder = QueryBuilder.builder(Submitter.class, AbstractEntity_.id, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder(Submitter_.id)
+                        ColDef.builder(AbstractEntity_.id)
                                 .build(),
                         ColDef.builder(Submitter_.name)
                                 .build()
@@ -115,7 +112,7 @@ public class MasterDetailService {
                 .colDefs(
                         ColDef.builder(Trade_.tradeId)
                                 .build(),
-                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
                                 .build(),
                         ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.name))
                                 .build()
@@ -128,7 +125,7 @@ public class MasterDetailService {
                                 .detailColDefs(
                                         ColDef.builder(Trade_.tradeId)
                                                 .build(),
-                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
                                                 .build(),
                                         ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.name))
                                                 .build()
@@ -155,9 +152,9 @@ public class MasterDetailService {
                 .build();
 
 
-        this.dynamicDetailQueryBuilder = QueryBuilder.builder(Submitter.class, Submitter_.id, Trade.class, entityManager)
+        this.dynamicDetailQueryBuilder = QueryBuilder.builder(Submitter.class, AbstractEntity_.id, Trade.class, entityManager)
                 .colDefs(
-                        ColDef.builder(Submitter_.id)
+                        ColDef.builder(AbstractEntity_.id)
                                 .build(),
                         ColDef.builder(Submitter_.name)
                                 .build()
@@ -200,7 +197,7 @@ public class MasterDetailService {
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
                                 .build(),
-                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
                                 .build()
                 )
 
@@ -223,7 +220,7 @@ public class MasterDetailService {
                                                 .build(),
                                         ColDef.builder(Trade_.portfolio)
                                                 .build(),
-                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(Submitter_.id))
+                                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
                                                 .build()
                                 )
                                 .createMasterRowPredicate((cb, detailRoot, masterRow) -> {
