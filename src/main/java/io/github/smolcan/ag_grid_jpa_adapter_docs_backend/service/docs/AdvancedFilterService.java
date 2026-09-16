@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AdvancedFilterService {
 
@@ -32,7 +34,7 @@ public class AdvancedFilterService {
                                 .build(),
                         // strings
                         ColDef.builder(Trade_.product)
-                                .filter(new AgTextColumnFilter())
+                                .filter(AgSetColumnFilter.forString())
                                 .build(),
                         ColDef.builder(Trade_.portfolio)
                                 .filter(new AgTextColumnFilter())
@@ -63,5 +65,10 @@ public class AdvancedFilterService {
     @Transactional(readOnly = true)
     public LoadSuccessParams getRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.getRows(request);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Object> supplySetFilterValues(String field) {
+        return this.queryBuilder.supplySetFilterValues(field);
     }
 }
