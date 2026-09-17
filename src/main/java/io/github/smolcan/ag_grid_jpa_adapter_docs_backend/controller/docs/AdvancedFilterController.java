@@ -26,4 +26,10 @@ public class AdvancedFilterController {
     public ResponseEntity<List<Object>> supplySetFilterValues(@PathVariable String field) {
         return ResponseEntity.ok(this.advancedFilterService.supplySetFilterValues(field));
     }
+
+    @PostMapping("custom-filter-options/getRows")
+    public ResponseEntity<LoadSuccessParams> getRowsCustomFilterOptions(@RequestBody ServerSideGetRowsRequest request) {
+        LoadSuccessParams result = this.advancedFilterService.getRowsCustomFilterOptions(request);
+        return ResponseEntity.ok(result);
+    }
 }
