@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaginationService {
 
     private final QueryBuilder<Trade, Long, Void> queryBuilder;
-    private final QueryBuilder<Trade, Long, Void> paginateChildRowsQueryBuilder;
     private final QueryBuilder<Trade, Long, Void> rowCountInResponseQueryBuilder;
 
     @Autowired
@@ -56,39 +55,6 @@ public class PaginationService {
                                 )
                                 .build()
                 )
-                .build();
-
-        this.paginateChildRowsQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
-                .colDefs(
-                        ColDef.builder(Trade_.tradeId)
-                                .filter(
-                                        new AgNumberColumnFilter<>()
-                                )
-                                .build(),
-
-                        ColDef.builder(FieldPath.of(Trade_.submitter).to(AbstractEntity_.id))
-                                .filter(
-                                        new AgNumberColumnFilter<>()
-                                )
-                                .build(),
-
-                        ColDef.builder(Trade_.portfolio)
-                                .enableRowGroup(true, key -> key)
-                                .filter(new AgTextColumnFilter())
-                                .build(),
-
-                        ColDef.builder(Trade_.book)
-                                .enableRowGroup(true, key -> key)
-                                .filter(new AgTextColumnFilter())
-                                .build(),
-
-                        ColDef.builder(Trade_.birthDate)
-                                .filter(
-                                        AgDateColumnFilter.forLocalDate()
-                                )
-                                .build()
-                )
-                .paginateChildRows(true)
                 .build();
 
         this.rowCountInResponseQueryBuilder = QueryBuilder.builder(Trade.class, Trade_.tradeId, entityManager)
@@ -133,16 +99,6 @@ public class PaginationService {
     @Transactional(readOnly = true)
     public long countRows(ServerSideGetRowsRequest request) {
         return this.queryBuilder.countRows(request);
-    }
-
-    @Transactional(readOnly = true)
-    public LoadSuccessParams paginateChildRowsGetRows(ServerSideGetRowsRequest request) {
-        return this.paginateChildRowsQueryBuilder.getRows(request);
-    }
-
-    @Transactional(readOnly = true)
-    public long paginateChildRowsCountRows(ServerSideGetRowsRequest request) {
-        return this.paginateChildRowsQueryBuilder.countRows(request);
     }
 
     @Transactional(readOnly = true)
